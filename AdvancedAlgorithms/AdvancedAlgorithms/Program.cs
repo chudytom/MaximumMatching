@@ -33,14 +33,16 @@ namespace AdvancedAlgorithms
 
 
             UndirectedGraph<int, Edge<int>> g;
+            List<Tuple<int, int>> pairs;
             while (true)
             {
                 Console.WriteLine("Podaj ścieżkę do pliku (albo napisz 'Zamknij' w celu zamknięcia programu)");
                 var consoleInput = Console.ReadLine();
-                if(FileParser.TryParseLine(consoleInput, out g))
+                if(FileParser.TryParseLine(consoleInput, out g, out pairs))
                 {
                     // algorithm
                     Console.WriteLine(g.EdgeCount);
+                    JTAlgorithm.Calculate(g, pairs);
                 }
                 else
                 {

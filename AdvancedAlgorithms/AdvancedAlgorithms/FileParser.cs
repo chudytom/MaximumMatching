@@ -9,14 +9,14 @@ namespace AdvancedAlgorithms
 {
     public static class FileParser
     {
-        public static bool TryParseLine(string inputLine, out UndirectedGraph<int, Edge<int>> graph)
+        public static bool TryParseLine(string inputLine, out UndirectedGraph<int, Edge<int>> graph, out List<Tuple<int, int>> edgesList)
         {
             UndirectedGraph<int, Edge<int>> g = new UndirectedGraph<int, Edge<int>>(false);
             int lineCounter = 0;
             int numberOfPeople = 0;
             int pairsNumber = 0;
             var lines = System.IO.File.ReadAllLines(inputLine);
-            List<Tuple<int, int>> edgesList = new List<Tuple<int, int>>();
+            edgesList = new List<Tuple<int, int>>();
             foreach (string line in lines)
             {
                 if (lineCounter == 0)

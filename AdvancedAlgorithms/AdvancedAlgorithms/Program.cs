@@ -10,10 +10,26 @@ namespace AdvancedAlgorithms
     {
         static void Main(string[] args)
         {
-            Graph testGraph;
-            Edge testEdge;
-            Console.WriteLine("test");
-            Console.WriteLine("test2");
+            Graph g;
+            while(true)
+            {
+                Console.WriteLine("Podaj ścieżkę do pliku (albo napisz 'Zamknij' w celu zamknięcia programu)");
+                var consoleInput = Console.ReadLine();
+                if(FileParser.TryParseLine(consoleInput, out g))
+                {
+                    // graph processing and creating output
+                }
+                else
+                {
+                    // check if program should end
+                    if(consoleInput.Contains("Zamknij"))
+                    {
+                        Console.WriteLine("Zamykanie...");
+                        break;
+                    }
+                }
+
+            }
         }
     }
 }

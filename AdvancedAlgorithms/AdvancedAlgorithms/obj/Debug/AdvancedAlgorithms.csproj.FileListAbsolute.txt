@@ -6,3 +6,4 @@ C:\Users\Jan Kierzkowski\Desktop\AZ\AdvancedAlgorithms\AdvancedAlgorithms\Advanc
 C:\Users\Jan Kierzkowski\Desktop\AZ\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\bin\Debug\AdvancedAlgorithms.exe.config
 C:\Users\Jan Kierzkowski\Desktop\AZ\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\bin\Debug\Graph.dll
 C:\Users\Jan Kierzkowski\Desktop\AZ\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\obj\Debug\AdvancedAlgorithms.csproj.CopyComplete
+C:\Users\Jan Kierzkowski\Desktop\AZ\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\obj\Debug\AdvancedAlgorithms.csprojAssemblyReference.cache

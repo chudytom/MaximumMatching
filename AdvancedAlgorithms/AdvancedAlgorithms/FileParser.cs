@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ASD.Graphs;
 
 namespace AdvancedAlgorithms
 {
@@ -11,6 +12,8 @@ namespace AdvancedAlgorithms
         public static bool TryParseLine(string inputLine)//, out Graph g)
         {
             //g = new AdjacencyMatrixGraph(false, 100);
+            Graph graph = new AdjacencyListsGraph<HashTableAdjacencyList>(true, 5);
+            graph.AddEdge(0, 1);
 
             int lineCounter = 0;
             int numberOfPeople = 0;

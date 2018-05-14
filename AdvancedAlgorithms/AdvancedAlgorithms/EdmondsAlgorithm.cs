@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using QuickGraph;
+using System.Collections.Generic;
 
 namespace AdvancedAlgorithms
 {
     public static class EdmondsAlgorithm
     {
-        // returns maximum matching in provided graph
-        //public static List<Edge> CalculateMaximumMatching(Graph g)
-        //{
-        //    return new List<Edge>();
-        //}
+        public static List<Edge<int>> CalculateMaximumMatching(UndirectedGraph<int, Edge<int>> g)
+        {
+            return new List<Edge<int>>();
+        }
     }
 }

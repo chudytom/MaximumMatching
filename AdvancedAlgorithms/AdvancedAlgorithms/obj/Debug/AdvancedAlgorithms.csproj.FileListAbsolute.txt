@@ -16,10 +16,6 @@ D:\OneDrive\Uczelnia\MiNI\10 semestr\AZ\Projekt\AdvancedAlgorithms\AdvancedAlgor
 C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\bin\Debug\AdvancedAlgorithms.exe.config
 C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\bin\Debug\AdvancedAlgorithms.exe
 C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\bin\Debug\AdvancedAlgorithms.pdb
-C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\obj\Debug\AdvancedAlgorithms.csproj.CoreCompileInputs.cache
-C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\obj\Debug\AdvancedAlgorithms.exe
-C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\obj\Debug\AdvancedAlgorithms.pdb
-C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\obj\Debug\AdvancedAlgorithms.csproj.CopyComplete
 C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\bin\Debug\QuickGraph.Data.dll
 C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\bin\Debug\QuickGraph.dll
 C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\bin\Debug\QuickGraph.Graphviz.dll
@@ -28,3 +24,7 @@ C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\Advan
 C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\bin\Debug\QuickGraph.Data.xml
 C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\bin\Debug\QuickGraph.Graphviz.xml
 C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\bin\Debug\QuickGraph.Serialization.xml
+C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\obj\Debug\AdvancedAlgorithms.csproj.CoreCompileInputs.cache
+C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\obj\Debug\AdvancedAlgorithms.csproj.CopyComplete
+C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\obj\Debug\AdvancedAlgorithms.exe
+C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\obj\Debug\AdvancedAlgorithms.pdb

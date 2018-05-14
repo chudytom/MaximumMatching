@@ -39,7 +39,7 @@ namespace AdvancedAlgorithms
                 var consoleInput = Console.ReadLine();
                 if(FileParser.TryParseLine(consoleInput, out g))
                 {
-                    // graph processing and creating output
+                    // algorithm
                     Console.WriteLine(g.EdgeCount);
                 }
                 else

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QuickGraph;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace AdvancedAlgorithms
 {
     public static class JTAlgorithm
     {
-        public static void Calculate()
+        public static void Calculate(UndirectedGraph<int, Edge<int>> g)
         {
 
         }

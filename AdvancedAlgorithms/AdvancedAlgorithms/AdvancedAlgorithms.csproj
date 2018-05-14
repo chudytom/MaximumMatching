@@ -34,8 +34,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Graph">
+    <Reference Include="Graph, Version=7.0.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\Graph.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

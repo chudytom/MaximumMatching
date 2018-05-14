@@ -26,20 +26,21 @@ namespace AdvancedAlgorithms
                     if(i!= j)
                     {
                         graph.AddEdge(new Edge<int>(i, j));
+                        graph.AddEdge(new Edge<int>(j, i));
                     }
                 }
             }
 
-            
 
+            UndirectedGraph<int, Edge<int>> g;
             while (true)
             {
                 Console.WriteLine("Podaj ścieżkę do pliku (albo napisz 'Zamknij' w celu zamknięcia programu)");
                 var consoleInput = Console.ReadLine();
-                if(FileParser.TryParseLine(consoleInput)) //, out g))
+                if(FileParser.TryParseLine(consoleInput, out g))
                 {
                     // graph processing and creating output
-                    //Console.WriteLine(g.VerticesCount.ToString());
+                    Console.WriteLine(g.EdgeCount);
                 }
                 else
                 {

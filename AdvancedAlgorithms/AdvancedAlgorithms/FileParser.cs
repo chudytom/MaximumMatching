@@ -9,46 +9,56 @@ namespace AdvancedAlgorithms
 {
     public static class FileParser
     {
-        public static bool TryParseLine(string inputLine)//, out Graph g)
+        public static bool TryParseLine(string inputLine, out UndirectedGraph<int, Edge<int>> graph)
         {
+            UndirectedGraph<int, Edge<int>> g = new UndirectedGraph<int, Edge<int>>(false);
             int lineCounter = 0;
             int numberOfPeople = 0;
             int pairsNumber = 0;
             var lines = System.IO.File.ReadAllLines(inputLine);
-            foreach(string line in lines)
+            List<Tuple<int, int>> edgesList = new List<Tuple<int, int>>();
+            foreach (string line in lines)
             {
-                if(lineCounter == 0)
+                if (lineCounter == 0)
                 {
                     ParseSingleInteger(line, out numberOfPeople);
                     // create graph
+                    //g = new BidirectionalMatrixGraph<Edge<int>>(numberOfPeople);
+                    for (int i = 0; i < numberOfPeople; i++)
+                    {
+                        g.AddVertex(i);
+                    }
                 }
-                else if(lineCounter == 1)
+                else if (lineCounter == 1)
                 {
                     ParseSingleInteger(line, out pairsNumber);
                 }
                 else
                 {
-                    if(lineCounter - 2 > pairsNumber)
+                    if (lineCounter - 2 > pairsNumber)
                     {
                         Console.WriteLine("Reading lines done");
                         break;
                     }
 
-
                     var pair = ParsePairLine(line);
+                    edgesList.Add(pair);
                     // add edge to graph
-                    
+                    g.AddEdge(new Edge<int>(pair.Item1, pair.Item2));
+                    //g.AddEdge(new Edge<int>(pair.Item2, pair.Item1));
+
                 }
                 lineCounter++;
             }
 
+            graph = CreateFinalGraph(numberOfPeople, edgesList);
 
             return true;
         }
 
         private static void ParseSingleInteger(string input, out int result)
         {
-            if (!int.TryParse(input, out result))       
+            if (!int.TryParse(input, out result))
             {
                 throw new Exception("Problems with parsing single integer input line");
             }
@@ -59,7 +69,48 @@ namespace AdvancedAlgorithms
             var pairLine = input.Split();
             int firstInt = int.Parse(pairLine[0]);
             int secondInt = int.Parse(pairLine[1]);
-            return  new Tuple<int, int>(firstInt, secondInt);
+            return new Tuple<int, int>(firstInt, secondInt);
+        }
+
+        private static UndirectedGraph<int, Edge<int>> CreateFinalGraph(UndirectedGraph<int, Edge<int>> g)
+        {
+            var finalGraph = new UndirectedGraph<int, Edge<int>>();
+            return finalGraph;
+        }
+
+        private static UndirectedGraph<int, Edge<int>> CreateFinalGraph(int numberOfPeople, List<Tuple<int, int>> pairs)
+        {
+            var finalGraph = new UndirectedGraph<int, Edge<int>>();
+
+            for (int i = 0; i < pairs.Count; i++)
+            {
+                finalGraph.AddVertex(i);
+            }
+
+            for(int i = 0; i < pairs.Count; i++)
+            {
+                for(int j = 0; j < pairs.Count; j++)
+                {
+                    if(i != j && !HaveCommonVertex(pairs[i], pairs[j]))
+                    {
+                        finalGraph.AddEdge(new Edge<int>(i, j));
+                    }
+                }
+            }
+
+            return finalGraph;
+        }
+
+        private static bool HaveCommonVertex(Tuple<int, int> first, Tuple<int, int> second)
+        {
+            if (first.Item1 == second.Item1 ||
+                first.Item1 == second.Item2 ||
+                first.Item2 == second.Item1 ||
+                first.Item2 == second.Item2)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

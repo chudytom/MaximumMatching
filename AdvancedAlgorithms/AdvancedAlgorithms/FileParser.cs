@@ -22,8 +22,6 @@ namespace AdvancedAlgorithms
                 if (lineCounter == 0)
                 {
                     ParseSingleInteger(line, out numberOfPeople);
-                    // create graph
-                    //g = new BidirectionalMatrixGraph<Edge<int>>(numberOfPeople);
                     for (int i = 0; i < numberOfPeople; i++)
                     {
                         g.AddVertex(i);
@@ -43,10 +41,9 @@ namespace AdvancedAlgorithms
 
                     var pair = ParsePairLine(line);
                     edgesList.Add(pair);
-                    // add edge to graph
-                    g.AddEdge(new Edge<int>(pair.Item1, pair.Item2));
-                    //g.AddEdge(new Edge<int>(pair.Item2, pair.Item1));
 
+                    // not needed (?)
+                    g.AddEdge(new Edge<int>(pair.Item1, pair.Item2));
                 }
                 lineCounter++;
             }

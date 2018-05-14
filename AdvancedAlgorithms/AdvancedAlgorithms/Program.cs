@@ -41,8 +41,8 @@ namespace AdvancedAlgorithms
                 if(FileParser.TryParseLine(consoleInput, out g, out pairs))
                 {
                     // algorithm
-                    Console.WriteLine(g.EdgeCount);
-                    JTAlgorithm.Calculate(g, pairs);
+                    int numberOfIterations = JTAlgorithm.Calculate(g, pairs);
+                    Console.WriteLine("Policzono : " + numberOfIterations + " iteracji.");
                 }
                 else
                 {

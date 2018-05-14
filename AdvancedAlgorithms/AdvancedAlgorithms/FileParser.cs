@@ -9,9 +9,9 @@ namespace AdvancedAlgorithms
 {
     public static class FileParser
     {
-        public static bool TryParseLine(string inputLine, out Graph g)
+        public static bool TryParseLine(string inputLine)//, out Graph g)
         {
-            g = new AdjacencyMatrixGraph(false, 100);
+            //g = new AdjacencyMatrixGraph(false, 100);
 
             int lineCounter = 0;
             int numberOfPeople = 0;

@@ -1,0 +1,2 @@
+C:\Users\Jan Kierzkowski\Desktop\AZ\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\obj\Debug\Fakes\g\o\f.csprojAssemblyReference.cache
+C:\Users\Jan Kierzkowski\Desktop\AZ\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\obj\Debug\Fakes\g\o\f.csproj.CoreCompileInputs.cache

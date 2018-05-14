@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ASD.Graphs;
 
 namespace AdvancedAlgorithms
 {
@@ -10,7 +9,6 @@ namespace AdvancedAlgorithms
     {
         static void Main(string[] args)
         {
-            //Graph g = new AdjacencyMatrixGraph(false, 100);
             while (true)
             {
                 Console.WriteLine("Podaj ścieżkę do pliku (albo napisz 'Zamknij' w celu zamknięcia programu)");

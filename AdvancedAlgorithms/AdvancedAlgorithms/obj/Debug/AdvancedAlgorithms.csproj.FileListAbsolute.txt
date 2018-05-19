@@ -28,3 +28,12 @@ C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\Advan
 C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\obj\Debug\AdvancedAlgorithms.csproj.CopyComplete
 C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\obj\Debug\AdvancedAlgorithms.exe
 C:\Users\Jan Kierzkowski\Desktop\AZ2\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\obj\Debug\AdvancedAlgorithms.pdb
+C:\Users\Jan Kierzkowski\Desktop\AZ\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\bin\Debug\QuickGraph.Data.dll
+C:\Users\Jan Kierzkowski\Desktop\AZ\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\bin\Debug\QuickGraph.dll
+C:\Users\Jan Kierzkowski\Desktop\AZ\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\bin\Debug\QuickGraph.Graphviz.dll
+C:\Users\Jan Kierzkowski\Desktop\AZ\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\bin\Debug\QuickGraph.Serialization.dll
+C:\Users\Jan Kierzkowski\Desktop\AZ\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\bin\Debug\QuickGraph.xml
+C:\Users\Jan Kierzkowski\Desktop\AZ\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\bin\Debug\QuickGraph.Data.xml
+C:\Users\Jan Kierzkowski\Desktop\AZ\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\bin\Debug\QuickGraph.Graphviz.xml
+C:\Users\Jan Kierzkowski\Desktop\AZ\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\bin\Debug\QuickGraph.Serialization.xml
+C:\Users\Jan Kierzkowski\Desktop\AZ\AdvancedAlgorithms\AdvancedAlgorithms\AdvancedAlgorithms\obj\Debug\AdvancedAlgorithms.csproj.CopyComplete

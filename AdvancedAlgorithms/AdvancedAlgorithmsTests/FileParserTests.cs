@@ -17,7 +17,7 @@ namespace AdvancedAlgorithmsTests
         {
             UndirectedGraph<int, Edge<int>> g;
             List<Tuple<int, int>> pairs;
-            string filePath = FindFilePath("test1.txt");
+            string filePath = TestHelper.FindFilePath("test1.txt");
             var result = FileParser.TryParseFile(filePath, out g, out pairs);
             Assert.AreEqual(9, g.VertexCount);
             Assert.AreEqual(42, g.EdgeCount);          
@@ -28,7 +28,7 @@ namespace AdvancedAlgorithmsTests
         {
             UndirectedGraph<int, Edge<int>> g;
             List<Tuple<int, int>> pairs;
-            string filePath = FindFilePath("test2.txt");
+            string filePath = TestHelper.FindFilePath("test2.txt");
             var result = FileParser.TryParseFile(filePath, out g, out pairs);
             Assert.AreEqual(12, g.VertexCount);
             Assert.AreEqual(86, g.EdgeCount);
@@ -39,15 +39,10 @@ namespace AdvancedAlgorithmsTests
         {
             UndirectedGraph<int, Edge<int>> g;
             List<Tuple<int, int>> pairs;
-            string filePath = FindFilePath("test3.txt");
+            string filePath = TestHelper.FindFilePath("test3.txt");
             var result = FileParser.TryParseFile(filePath, out g, out pairs);
             Assert.AreEqual(23, g.VertexCount);
             Assert.AreEqual(394, g.EdgeCount);
-        }
-
-        private string FindFilePath(string testFileName)
-        {
-            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\TestFiles\\" + testFileName;
         }
     }
 }

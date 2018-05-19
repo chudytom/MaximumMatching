@@ -38,7 +38,7 @@ namespace AdvancedAlgorithms
             {
                 Console.WriteLine("Podaj ścieżkę do pliku (albo napisz 'Zamknij' w celu zamknięcia programu)");
                 var consoleInput = Console.ReadLine();
-                if(FileParser.TryParseLine(consoleInput, out g, out pairs))
+                if(FileParser.TryParseFile(consoleInput, out g, out pairs))
                 {
                     // algorithm
                     int numberOfIterations = JTAlgorithm.Calculate(g, pairs);

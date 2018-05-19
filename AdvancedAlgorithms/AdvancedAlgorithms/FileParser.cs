@@ -9,7 +9,7 @@ namespace AdvancedAlgorithms
 {
     public static class FileParser
     {
-        public static bool TryParseLine(string inputLine, out UndirectedGraph<int, Edge<int>> graph, out List<Tuple<int, int>> edgesList)
+        public static bool TryParseFile(string inputLine, out UndirectedGraph<int, Edge<int>> graph, out List<Tuple<int, int>> edgesList)
         {
             UndirectedGraph<int, Edge<int>> g = new UndirectedGraph<int, Edge<int>>(false);
             int lineCounter = 0;

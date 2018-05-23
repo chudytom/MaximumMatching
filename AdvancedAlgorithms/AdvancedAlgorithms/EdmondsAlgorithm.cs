@@ -1,8 +1,5 @@
 ﻿using QuickGraph;
-<<<<<<< HEAD
 using System;
-=======
->>>>>>> master
 using System.Collections.Generic;
 
 namespace AdvancedAlgorithms
@@ -11,7 +8,6 @@ namespace AdvancedAlgorithms
     {
         public static List<Edge<int>> CalculateMaximumMatching(UndirectedGraph<int, Edge<int>> g)
         {
-<<<<<<< HEAD
             var initialMatching = new List<Edge<int>>();
             return FindMaximumMatching(g, initialMatching);
         }
@@ -161,7 +157,7 @@ namespace AdvancedAlgorithms
                                 var contractedAugmentingPath = FindAugmentingPath(contractedGraph, contractedMatching);
 
 
-                                return LiftAugmentingPath(contractedAugmentingPath, blossom, g);+
+                                return LiftAugmentingPath(contractedAugmentingPath, blossom, g);
                             }
                         }
                     }
@@ -306,9 +302,5 @@ namespace AdvancedAlgorithms
             rootVertex = vertex;
             return true;
         }
-=======
-            return new List<Edge<int>>();
-        }
->>>>>>> master
     }
 }

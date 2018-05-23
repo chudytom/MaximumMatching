@@ -44,6 +44,7 @@ namespace AdvancedAlgorithms
         private static List<Edge<int>> FindAugmentingPath(UndirectedGraph<int, Edge<int>> g, List<Edge<int>> currentMatching)
         {
             var F = new UndirectedGraph<int, Edge<int>>(); //Forest F
+            HashSet<Edge<int>> usedEdges = new HashSet<Edge<int>>();
             var vertices = new List<int>(g.Vertices).ToArray();
             var edges = new List<Edge<int>>(g.Edges).ToArray();
             bool[] verticesUsed = new bool[g.VertexCount];
@@ -60,6 +61,7 @@ namespace AdvancedAlgorithms
             {
                 isMatched[edge.Source] = true;
                 isMatched[edge.Target] = true;
+                usedEdges.Add(edge);
             }
             for (int i = 0; i < isMatched.Length; i++)
             {
@@ -70,6 +72,7 @@ namespace AdvancedAlgorithms
                 }
             }
 
+
             for (int v = 0; v < g.VertexCount; v++)
             {
                 if (verticesUsed[v])
@@ -78,6 +81,8 @@ namespace AdvancedAlgorithms
                     continue;
                 foreach (var edgeVW in g.AdjacentEdges(v))
                 {
+                    if (usedEdges.Contains(edgeVW))
+                        continue;
                     int w = edgeVW.Target;
                     if (w == v)
                         w = edgeVW.Source;
@@ -138,7 +143,7 @@ namespace AdvancedAlgorithms
                                 if (!pathFound)
                                     throw new ArgumentException();
                                 var pathFromVToW = new List<Edge<int>>();
-                                while(pathStack.Count!=0)
+                                while (pathStack.Count != 0)
                                 {
                                     pathToVRoot.Add(pathStack.Pop());
                                 }
@@ -146,16 +151,17 @@ namespace AdvancedAlgorithms
                                 var blossom = new List<Edge<int>>(pathFromVToW);
                                 blossom.Add(edgeVW);
 
-                                var contractedGraph = ContractGraph(g, blossom);
                                 var contractedMatching = ContractMatching(currentMatching, blossom);
+                                var contractedGraph = ContractGraph(g, blossom);
 
                                 var contractedAugmentingPath = FindAugmentingPath(contractedGraph, contractedMatching);
 
 
-                                return LiftAugmentingPath(contractedAugmentingPath, blossom);
+                                return LiftAugmentingPath(contractedAugmentingPath, blossom, g);+
                             }
                         }
                     }
+                    usedEdges.Add(edgeVW);
                 }
             }
 
@@ -168,36 +174,73 @@ namespace AdvancedAlgorithms
         /// <param name="augmentingPath"></param>
         /// <param name="blossom"></param>
         /// <returns></returns>
-        private static List<Edge<int>> LiftAugmentingPath(List<Edge<int>> augmentingPath, List<Edge<int>> blossom)
+        private static List<Edge<int>> LiftAugmentingPath(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g)
         {
             var liftedAugmentingPath = new List<Edge<int>>(augmentingPath);
             foreach (var edge in blossom)
             {
-                
+
             }
             return liftedAugmentingPath;
         }
 
         private static UndirectedGraph<int, Edge<int>> ContractGraph(UndirectedGraph<int, Edge<int>> g, List<Edge<int>> blossom)
         {
-            var contractedGraph = new UndirectedGraph<int, Edge<int>>();
-            foreach (var edge in g.Edges)
+            var gNew = new UndirectedGraph<int, Edge<int>>();
+            for (int i = 0; i < g.VertexCount; i++)
             {
-                if (blossom.Contains(edge))
-                    continue;
-                contractedGraph.AddEdge(edge);
+                gNew.AddVertex(i);
             }
 
-            return contractedGraph;
+            List<int> blossomVertices = new List<int>();
+            foreach(var edge in blossom)
+            {
+                blossomVertices.Add(edge.Source);
+            }
+
+            int superVertex = blossomVertices[0];
+
+
+        
+            foreach(var edge in g.Edges)
+            {
+                var containsSource = blossomVertices.Contains(edge.Source);
+                var containsTarget = blossomVertices.Contains(edge.Target);
+
+                if(containsSource && containsTarget)
+                {
+                    // wszystko w blossomie
+                    // nie przepisujemy
+                }
+                else if(containsSource || containsTarget)
+                {
+                    // ciezko bo na zewnatrz (nowa krawedz hehehe)
+                    if(containsSource)
+                    {
+                        gNew.AddEdge(new Edge<int>(edge.Target, superVertex));
+                    }
+                    else
+                    {
+                        gNew.AddEdge(new Edge<int>(edge.Source, superVertex));
+                    }
+                } 
+                else
+                {
+                    // przepisujemy
+                    gNew.AddEdge(edge);
+                }
+            }
+
+            return gNew;
         }
 
         private static List<Edge<int>> ContractMatching(List<Edge<int>> matching, List<Edge<int>> blossom)
         {
             var contractedMatching = new List<Edge<int>>();
-            var blossomStack = new HashSet<Edge<int>>();
+            var blossomHashSet = new HashSet<Edge<int>>(blossom);
             foreach (var edge in matching)
             {
-                if (blossomStack.Contains(edge))
+                if (blossomHashSet.Contains(edge))
                     continue;
                 else
                     contractedMatching.Add(edge);

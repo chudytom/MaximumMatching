@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using QuickGraph;
+using QuickGraph.Algorithms;
 
 namespace AdvancedAlgorithms
 {
@@ -9,14 +11,38 @@ namespace AdvancedAlgorithms
     {
         static void Main(string[] args)
         {
+            // example :D
+            int nodes = 10;
+            AdjacencyGraph<int, Edge<int>> graph = new AdjacencyGraph<int, Edge<int>>(true);
+            for(int i = 0; i < nodes; i++)
+            {
+                graph.AddVertex(i);
+            }
+
+            for(int i = 0; i < nodes; i++)
+            {
+                for(int j = 0; j < nodes; j++)
+                {
+                    if(i!= j)
+                    {
+                        graph.AddEdge(new Edge<int>(i, j));
+                        graph.AddEdge(new Edge<int>(j, i));
+                    }
+                }
+            }
+
+
+            UndirectedGraph<int, Edge<int>> g;
+            List<Tuple<int, int>> pairs;
             while (true)
             {
                 Console.WriteLine("Podaj ścieżkę do pliku (albo napisz 'Zamknij' w celu zamknięcia programu)");
                 var consoleInput = Console.ReadLine();
-                if(FileParser.TryParseLine(consoleInput)) //, out g))
+                if(FileParser.TryParseFile(consoleInput, out g, out pairs))
                 {
-                    // graph processing and creating output
-                    //Console.WriteLine(g.VerticesCount.ToString());
+                    // algorithm
+                    int numberOfIterations = JTAlgorithm.Calculate(g, pairs);
+                    Console.WriteLine("Policzono : " + numberOfIterations + " iteracji.");
                 }
                 else
                 {

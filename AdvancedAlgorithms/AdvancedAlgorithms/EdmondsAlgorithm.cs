@@ -14,7 +14,7 @@ namespace AdvancedAlgorithms
 
         private static List<Edge<int>> FindMaximumMatching(UndirectedGraph<int, Edge<int>> G, List<Edge<int>> M)
         {
-            var augmentingPath = FindAugmentingPath(G, M);
+            var augmentingPath = FindAugmentingPath(G, M, out Edge<int> connectingTreesEdge);
             if (augmentingPath.Count != 0)
                 return FindMaximumMatching(G, GetSymetricalDifference(M, augmentingPath));
             else
@@ -41,8 +41,9 @@ namespace AdvancedAlgorithms
         /// <param name="g"></param>
         /// <param name="currentMatching"></param>
         /// <returns></returns>
-        private static List<Edge<int>> FindAugmentingPath(UndirectedGraph<int, Edge<int>> g, List<Edge<int>> currentMatching)
+        private static List<Edge<int>> FindAugmentingPath(UndirectedGraph<int, Edge<int>> g, List<Edge<int>> currentMatching, out Edge<int> connectingTreesEdge)
         {
+            connectingTreesEdge = null;
             var F = new UndirectedGraph<int, Edge<int>>(); //Forest F
             HashSet<Edge<int>> usedEdges = new HashSet<Edge<int>>();
             var vertices = new List<int>(g.Vertices).ToArray();
@@ -132,6 +133,7 @@ namespace AdvancedAlgorithms
                                 {
                                     augmentingPath.Add(wRootPath.Dequeue());
                                 }
+                                connectingTreesEdge = edgeVW;
                                 return augmentingPath;
                             }
                             else
@@ -152,12 +154,12 @@ namespace AdvancedAlgorithms
                                 blossom.Add(edgeVW);
 
                                 var contractedMatching = ContractMatching(currentMatching, blossom);
-                                var contractedGraph = ContractGraph(g, blossom);
+                                var contractedGraph = ContractGraph(g, blossom, out int superVertex);
 
-                                var contractedAugmentingPath = FindAugmentingPath(contractedGraph, contractedMatching);
+                                var contractedAugmentingPath = FindAugmentingPath(contractedGraph, contractedMatching, out Edge<int> edgeBetweenTrees);
 
 
-                                return LiftAugmentingPath(contractedAugmentingPath, blossom, g);
+                                return LiftAugmentingPath(contractedAugmentingPath, blossom, g, edgeBetweenTrees, superVertex);
                             }
                         }
                     }
@@ -174,17 +176,86 @@ namespace AdvancedAlgorithms
         /// <param name="augmentingPath"></param>
         /// <param name="blossom"></param>
         /// <returns></returns>
-        private static List<Edge<int>> LiftAugmentingPath(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g)
+        private static List<Edge<int>> LiftAugmentingPath(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex)
         {
             var liftedAugmentingPath = new List<Edge<int>>(augmentingPath);
+            var blossomVertices = new HashSet<int>();
             foreach (var edge in blossom)
             {
-
+                blossomVertices.Add(edge.Source);
+                blossomVertices.Add(edge.Target);
             }
+
+            var pathInFirstTree = new List<Edge<int>>();
+            var pathInSecondTree = new List<Edge<int>>();
+            bool isFirstTree = true;
+            foreach (var edge in augmentingPath)
+            {
+                if(edge == edgeBetweenTrees)
+                {
+                    isFirstTree = false;
+                    continue;
+                }
+                if (isFirstTree)
+                    pathInFirstTree.Add(edge);
+                else
+                    pathInSecondTree.Add(edge);
+            }
+
+            int edgeBetweenVertexInFirstTree = edgeBetweenTrees.Source;
+            if (edgeBetweenVertexInFirstTree == superVertex)
+                edgeBetweenVertexInFirstTree = edgeBetweenTrees.Target;
+
+            Edge<int> edgeBetweenInFullGraph = null;
+
+            foreach (var edge in g.AdjacentEdges(edgeBetweenVertexInFirstTree))
+            {
+                if (blossomVertices.Contains(edge.Target))
+                {
+                    edgeBetweenInFullGraph = edge;
+                    break;
+                }
+            }
+
+            if (edgeBetweenInFullGraph == null)
+                throw new ArgumentException();
+            int edgeBetweenVertexInSecondTree = edgeBetweenInFullGraph.Target;
+            if (edgeBetweenVertexInSecondTree == edgeBetweenVertexInFirstTree)
+                edgeBetweenVertexInSecondTree = edgeBetweenInFullGraph.Source;
+
+            var pathFromBlossom = new List<Edge<int>>(blossom);
+            foreach (var edge in blossom)
+            {
+                if(edge.Source == edgeBetweenVertexInSecondTree && edge.Target == superVertex ||
+                    edge.Target == edgeBetweenVertexInSecondTree && edge.Source == superVertex)
+                {
+                    pathFromBlossom.Remove(edge);
+                    break;
+                }
+            }
+            if (pathFromBlossom.Count == blossom.Count)
+                throw new ArgumentException();
+
+            foreach (var edge in pathInFirstTree)
+            {
+                liftedAugmentingPath.Add(edge);
+            }
+            augmentingPath.Add(edgeBetweenInFullGraph);
+            foreach (var edge in pathFromBlossom)
+            {
+                augmentingPath.Add(edge);
+            }
+            foreach (var edge in pathInSecondTree)
+            {
+                augmentingPath.Add(edge);
+            }
+
+
+
             return liftedAugmentingPath;
         }
 
-        private static UndirectedGraph<int, Edge<int>> ContractGraph(UndirectedGraph<int, Edge<int>> g, List<Edge<int>> blossom)
+        private static UndirectedGraph<int, Edge<int>> ContractGraph(UndirectedGraph<int, Edge<int>> g, List<Edge<int>> blossom, out int superVertex)
         {
             var gNew = new UndirectedGraph<int, Edge<int>>();
             for (int i = 0; i < g.VertexCount; i++)
@@ -198,7 +269,7 @@ namespace AdvancedAlgorithms
                 blossomVertices.Add(edge.Source);
             }
 
-            int superVertex = blossomVertices[0];
+            superVertex = blossomVertices[0];
 
 
         

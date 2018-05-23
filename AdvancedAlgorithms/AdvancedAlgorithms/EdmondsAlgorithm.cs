@@ -1,6 +1,7 @@
 ﻿using QuickGraph;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AdvancedAlgorithms
 {
@@ -73,11 +74,18 @@ namespace AdvancedAlgorithms
                 }
             }
 
+            var verticesInF = new HashSet<int>(F.Vertices);
 
-            for (int v = 0; v < g.VertexCount; v++)
+            while (verticesInF.Count != 0)
             {
-                if (verticesUsed[v])
-                    continue;
+                int v = verticesInF.First();
+                foreach (var tempVertex in F.Vertices)
+                {
+                    if (verticesUsed[tempVertex] == false)
+                        verticesInF.Add(tempVertex);
+                }
+                //if (verticesUsed[v])
+                //    continue;
                 if (verticesLevels[v] != -1 && verticesLevels[v] % 2 == 1)
                     continue;
                 foreach (var edgeVW in g.AdjacentEdges(v))
@@ -87,10 +95,12 @@ namespace AdvancedAlgorithms
                     int w = edgeVW.Target;
                     if (w == v)
                         w = edgeVW.Source;
-                    if (!F.ContainsVertex(edgeVW.Target))
+                    if (!F.ContainsVertex(w))
                     {
                         foreach (var matchedEdge in currentMatching)
                         {
+                            if (!(matchedEdge.Source == w || matchedEdge.Target == w))
+                                continue;
                             int x = -1;
                             if (matchedEdge.Source == w)
                                 x = matchedEdge.Target;
@@ -100,9 +110,11 @@ namespace AdvancedAlgorithms
                                 throw new ArgumentException();
                             verticesLevels[w] = verticesLevels[v] + 1;
                             verticesLevels[x] = verticesLevels[w] + 1;
-                            F.AddEdge(edgeVW);
-                            F.AddEdge(matchedEdge);
+                            F.AddVerticesAndEdge(edgeVW);
+                            F.AddVerticesAndEdge(matchedEdge);
                         }
+                        if (F.EdgeCount == 0)
+                            throw new ArgumentException();
                     }
                     else
                     {
@@ -165,6 +177,8 @@ namespace AdvancedAlgorithms
                     }
                     usedEdges.Add(edgeVW);
                 }
+                verticesInF.Remove(v);
+                verticesUsed[v] = true;
             }
 
             return new List<Edge<int>>();
@@ -191,7 +205,7 @@ namespace AdvancedAlgorithms
             bool isFirstTree = true;
             foreach (var edge in augmentingPath)
             {
-                if(edge == edgeBetweenTrees)
+                if (edge == edgeBetweenTrees)
                 {
                     isFirstTree = false;
                     continue;
@@ -226,7 +240,7 @@ namespace AdvancedAlgorithms
             var pathFromBlossom = new List<Edge<int>>(blossom);
             foreach (var edge in blossom)
             {
-                if(edge.Source == edgeBetweenVertexInSecondTree && edge.Target == superVertex ||
+                if (edge.Source == edgeBetweenVertexInSecondTree && edge.Target == superVertex ||
                     edge.Target == edgeBetweenVertexInSecondTree && edge.Source == superVertex)
                 {
                     pathFromBlossom.Remove(edge);
@@ -264,7 +278,7 @@ namespace AdvancedAlgorithms
             }
 
             List<int> blossomVertices = new List<int>();
-            foreach(var edge in blossom)
+            foreach (var edge in blossom)
             {
                 blossomVertices.Add(edge.Source);
             }
@@ -272,21 +286,21 @@ namespace AdvancedAlgorithms
             superVertex = blossomVertices[0];
 
 
-        
-            foreach(var edge in g.Edges)
+
+            foreach (var edge in g.Edges)
             {
                 var containsSource = blossomVertices.Contains(edge.Source);
                 var containsTarget = blossomVertices.Contains(edge.Target);
 
-                if(containsSource && containsTarget)
+                if (containsSource && containsTarget)
                 {
                     // wszystko w blossomie
                     // nie przepisujemy
                 }
-                else if(containsSource || containsTarget)
+                else if (containsSource || containsTarget)
                 {
                     // ciezko bo na zewnatrz (nowa krawedz hehehe)
-                    if(containsSource)
+                    if (containsSource)
                     {
                         gNew.AddEdge(new Edge<int>(edge.Target, superVertex));
                     }
@@ -294,7 +308,7 @@ namespace AdvancedAlgorithms
                     {
                         gNew.AddEdge(new Edge<int>(edge.Source, superVertex));
                     }
-                } 
+                }
                 else
                 {
                     // przepisujemy
@@ -342,12 +356,12 @@ namespace AdvancedAlgorithms
             return destinationFound;
         }
 
-        private static bool TryGetRootForVertex(UndirectedGraph<int, Edge<int>> tree, int vertex,
+        private static bool TryGetRootForVertex(UndirectedGraph<int, Edge<int>> forest, int vertex,
             int[] verticesLevels, out int rootVertex, out List<Edge<int>> pathToRoot)
         {
             pathToRoot = new List<Edge<int>>();
             rootVertex = -1;
-            if (verticesLevels[vertex] == -1 || tree.ContainsVertex(vertex) == false)
+            if (verticesLevels[vertex] == -1 || forest.ContainsVertex(vertex) == false)
             {
                 return false;
             }
@@ -355,7 +369,7 @@ namespace AdvancedAlgorithms
             while (verticesLevels[vertex] != 0)
             {
                 int higherVertex = -1;
-                foreach (var edge in tree.AdjacentEdges(vertex))
+                foreach (var edge in forest.AdjacentEdges(vertex))
                 {
                     if (verticesLevels[edge.Target] == -1)
                         continue;

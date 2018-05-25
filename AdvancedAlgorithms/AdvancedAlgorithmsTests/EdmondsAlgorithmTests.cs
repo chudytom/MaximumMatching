@@ -31,7 +31,26 @@ namespace AdvancedAlgorithmsTests
         {
             var testGraphFromPapers = GetGraphFromPapers();
             var maximumMatching = EdmondsAlgorithm.CalculateMaximumMatching(testGraphFromPapers);
-            Assert.AreEqual(maximumMatching.Count, 3);
+            int correctEdgesCount = 3;
+            var matchedVertices = GetMatchedVertices(maximumMatching);
+
+            Assert.AreEqual(maximumMatching.Count, correctEdgesCount);
+
+            Assert.AreEqual(matchedVertices.Count, correctEdgesCount * 2);
         }
+
+        private HashSet<int> GetMatchedVertices(List<Edge<int>> matching)
+        {
+            var matchedVertices = new HashSet<int>();
+            foreach (var edge in matching)
+            {
+                matchedVertices.Add(edge.Source);
+                matchedVertices.Add(edge.Target);
+            }
+            return matchedVertices;
+        }
+    
+
+
     }
 }

@@ -101,11 +101,7 @@ namespace AdvancedAlgorithms
                         {
                             if (!(matchedEdge.Source == w || matchedEdge.Target == w))
                                 continue;
-                            int x = -1;
-                            if (matchedEdge.Source == w)
-                                x = matchedEdge.Target;
-                            if (matchedEdge.Target == w)
-                                x = matchedEdge.Source;
+                            int x = GetTargetVertex(matchedEdge, w);
                             if (x == -1)
                                 throw new ArgumentException();
                             verticesLevels[w] = verticesLevels[v] + 1;
@@ -151,7 +147,11 @@ namespace AdvancedAlgorithms
                             else
                             {
                                 Stack<int> stack = new Stack<int>();
-                                bool[] visited = new bool[F.VertexCount];
+                                var visited = new Dictionary<int, bool>();
+                                foreach (var vertex in F.Vertices)
+                                {
+                                    visited.Add(vertex, false);
+                                }
                                 var pathStack = new Stack<Edge<int>>();
                                 bool pathFound = DFSSearch(v, w, visited, g, pathStack);
                                 if (!pathFound)
@@ -159,17 +159,18 @@ namespace AdvancedAlgorithms
                                 var pathFromVToW = new List<Edge<int>>();
                                 while (pathStack.Count != 0)
                                 {
-                                    pathToVRoot.Add(pathStack.Pop());
+                                    pathFromVToW.Add(pathStack.Pop());
                                 }
 
                                 var blossom = new List<Edge<int>>(pathFromVToW);
                                 blossom.Add(edgeVW);
 
                                 var contractedMatching = ContractMatching(currentMatching, blossom);
-                                var contractedGraph = ContractGraph(g, blossom, out int superVertex);
+                                var contractedGraph = ContractGraph(g, blossom, out int superVertex, currentMatching);
 
                                 var contractedAugmentingPath = FindAugmentingPath(contractedGraph, contractedMatching, out Edge<int> edgeBetweenTrees);
-
+                                if (contractedAugmentingPath.Count == 0)
+                                    return contractedAugmentingPath;
 
                                 return LiftAugmentingPath(contractedAugmentingPath, blossom, g, edgeBetweenTrees, superVertex);
                             }
@@ -190,7 +191,7 @@ namespace AdvancedAlgorithms
         /// <param name="augmentingPath"></param>
         /// <param name="blossom"></param>
         /// <returns></returns>
-        private static List<Edge<int>> LiftAugmentingPath(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex)
+        public static List<Edge<int>> LiftAugmentingPath(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex)
         {
             var liftedAugmentingPath = new List<Edge<int>>(augmentingPath);
             var blossomVertices = new HashSet<int>();
@@ -224,7 +225,8 @@ namespace AdvancedAlgorithms
 
             foreach (var edge in g.AdjacentEdges(edgeBetweenVertexInFirstTree))
             {
-                if (blossomVertices.Contains(edge.Target))
+                int targetVertex = GetTargetVertex(edge, edgeBetweenVertexInFirstTree);
+                if (blossomVertices.Contains(targetVertex))
                 {
                     edgeBetweenInFullGraph = edge;
                     break;
@@ -247,8 +249,8 @@ namespace AdvancedAlgorithms
                     break;
                 }
             }
-            if (pathFromBlossom.Count == blossom.Count)
-                throw new ArgumentException();
+            //if (pathFromBlossom.Count == blossom.Count)
+            //    throw new ArgumentException();
 
             foreach (var edge in pathInFirstTree)
             {
@@ -269,21 +271,30 @@ namespace AdvancedAlgorithms
             return liftedAugmentingPath;
         }
 
-        private static UndirectedGraph<int, Edge<int>> ContractGraph(UndirectedGraph<int, Edge<int>> g, List<Edge<int>> blossom, out int superVertex)
+        public static UndirectedGraph<int, Edge<int>> ContractGraph(UndirectedGraph<int, Edge<int>> g, List<Edge<int>> blossom, out int superVertex, IEnumerable<Edge<int>> matching)
         {
             var gNew = new UndirectedGraph<int, Edge<int>>();
-            for (int i = 0; i < g.VertexCount; i++)
+            foreach (var vertex in g.Vertices)
             {
-                gNew.AddVertex(i);
+                gNew.AddVertex(vertex);
             }
 
-            List<int> blossomVertices = new List<int>();
+            var blossomVertices = new HashSet<int>();
             foreach (var edge in blossom)
             {
                 blossomVertices.Add(edge.Source);
+                blossomVertices.Add(edge.Target);
             }
 
-            superVertex = blossomVertices[0];
+            var matchedVertices = new HashSet<int>();
+
+            foreach (var edge in matching)
+            {
+                matchedVertices.Add(edge.Source);
+                matchedVertices.Add(edge.Target);
+            }
+
+            superVertex = blossomVertices.First( vertex => !matchedVertices.Contains(vertex));
 
 
 
@@ -319,7 +330,7 @@ namespace AdvancedAlgorithms
             return gNew;
         }
 
-        private static List<Edge<int>> ContractMatching(List<Edge<int>> matching, List<Edge<int>> blossom)
+        public static List<Edge<int>> ContractMatching(List<Edge<int>> matching, List<Edge<int>> blossom)
         {
             var contractedMatching = new List<Edge<int>>();
             var blossomHashSet = new HashSet<Edge<int>>(blossom);
@@ -333,20 +344,21 @@ namespace AdvancedAlgorithms
             return contractedMatching;
         }
 
-        private static bool DFSSearch(int source, int destination, bool[] visited, UndirectedGraph<int, Edge<int>> g, Stack<Edge<int>> stack)
+        public static bool DFSSearch(int source, int destination, Dictionary<int, bool> visited, UndirectedGraph<int, Edge<int>> g, Stack<Edge<int>> stack)
         {
             visited[source] = true;
             bool destinationFound = false;
             foreach (var edge in g.AdjacentEdges(source))
             {
-                if (visited[edge.Target])
+                int targerVertex = GetTargetVertex(edge, source);
+                if (visited[targerVertex])
                     continue;
-                if (edge.Target == destination)
+                if (targerVertex == destination)
                 {
                     stack.Push(edge);
                     return true;
                 }
-                destinationFound = DFSSearch(edge.Target, destination, visited, g, stack);
+                destinationFound = DFSSearch(targerVertex, destination, visited, g, stack);
                 if (destinationFound)
                 {
                     stack.Push(edge);
@@ -356,7 +368,7 @@ namespace AdvancedAlgorithms
             return destinationFound;
         }
 
-        private static bool TryGetRootForVertex(UndirectedGraph<int, Edge<int>> forest, int vertex,
+        public static bool TryGetRootForVertex(UndirectedGraph<int, Edge<int>> forest, int vertex,
             int[] verticesLevels, out int rootVertex, out List<Edge<int>> pathToRoot)
         {
             pathToRoot = new List<Edge<int>>();
@@ -371,11 +383,12 @@ namespace AdvancedAlgorithms
                 int higherVertex = -1;
                 foreach (var edge in forest.AdjacentEdges(vertex))
                 {
-                    if (verticesLevels[edge.Target] == -1)
+                    int targetVertex = GetTargetVertex(edge, vertex);
+                    if (verticesLevels[targetVertex] == -1)
                         continue;
-                    if (verticesLevels[edge.Target] == verticesLevels[vertex] + 1)
+                    if (verticesLevels[targetVertex] == verticesLevels[vertex] - 1)
                     {
-                        higherVertex = edge.Target;
+                        higherVertex = targetVertex;
                         pathToRoot.Add(edge);
                         vertex = higherVertex;
                         break;
@@ -386,6 +399,16 @@ namespace AdvancedAlgorithms
             }
             rootVertex = vertex;
             return true;
+        }
+
+        public static int GetTargetVertex(Edge<int> edge, int source)
+        {
+            if (edge.Source == source)
+                return edge.Target;
+            else if (edge.Target == source)
+                return edge.Source;
+            else
+                throw new ArgumentException("Incorrect edge or source vertex");
         }
     }
 }

@@ -84,8 +84,11 @@ namespace AdvancedAlgorithms
                     if (verticesUsed[tempVertex] == false)
                         verticesInF.Add(tempVertex);
                 }
-                //if (verticesUsed[v])
-                //    continue;
+                if (verticesUsed[v])
+                    continue;
+                verticesUsed[v] = true;
+                verticesInF.Remove(v);
+                    
                 if (verticesLevels[v] != -1 && verticesLevels[v] % 2 == 1)
                     continue;
                 foreach (var edgeVW in g.AdjacentEdges(v))
@@ -346,6 +349,8 @@ namespace AdvancedAlgorithms
 
         public static bool DFSSearch(int source, int destination, Dictionary<int, bool> visited, UndirectedGraph<int, Edge<int>> g, Stack<Edge<int>> stack)
         {
+            if (source == destination)
+                return true;
             visited[source] = true;
             bool destinationFound = false;
             foreach (var edge in g.AdjacentEdges(source))

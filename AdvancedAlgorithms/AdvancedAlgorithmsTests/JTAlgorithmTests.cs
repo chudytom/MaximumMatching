@@ -6,9 +6,9 @@ namespace AdvancedAlgorithmsTests
     [TestClass]
     public class JTAlgorithmTests
     {
-        [TestMethod]
-        public void TestMethod1()
-        {
-        }
+        //[TestMethod]
+        //public void TestMethod1()
+        //{
+        //}
     }
 }

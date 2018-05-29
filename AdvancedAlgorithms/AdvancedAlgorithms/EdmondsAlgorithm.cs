@@ -7,6 +7,7 @@ namespace AdvancedAlgorithms
 {
     public static class EdmondsAlgorithm
     {
+        // Test written, algorithm needs improvement
         public static List<Edge<int>> CalculateMaximumMatching(UndirectedGraph<int, Edge<int>> g)
         {
             var initialMatching = new List<Edge<int>>();
@@ -17,27 +18,35 @@ namespace AdvancedAlgorithms
         {
             var augmentingPath = FindAugmentingPath(G, M, out Edge<int> connectingTreesEdge);
             if (augmentingPath.Count != 0)
-                return FindMaximumMatching(G, GetSymetricalDifference(M, augmentingPath));
+                return FindMaximumMatching(G, GetSymmetricalDifference(M, augmentingPath));
             else
                 return M;
         }
 
-        private static List<Edge<int>> GetSymetricalDifference(List<Edge<int>> colletion1, List<Edge<int>> collection2)
+        // Tested
+        public static List<Edge<int>> GetSymmetricalDifference(List<Edge<int>> collection1, List<Edge<int>> collection2)
         {
-            var firstSet = new HashSet<Edge<int>>(colletion1);
+            var set1 = new HashSet<Edge<int>>(collection1, new EdgeComparer());
+            var set2 = new HashSet<Edge<int>>(collection2, new EdgeComparer());
 
-            foreach (var item in collection2)
+            var difference = new HashSet<Edge<int>>(new EdgeComparer());
+
+            foreach (var edge in collection1)
             {
-                bool added = firstSet.Add(item);
-                if (!added)
-                    firstSet.Remove(item);
+                if (!set2.Contains(edge))
+                    difference.Add(edge);
             }
 
-            return new List<Edge<int>>(firstSet);
+            foreach (var edge in collection2)
+            {
+                if (!set1.Contains(edge))
+                    difference.Add(edge);
+            }
+
+            return new List<Edge<int>>(difference);
         }
 
         /// <summary>
-        /// TODO: Finish the end of th algorithm
         /// </summary>
         /// <param name="g"></param>
         /// <param name="currentMatching"></param>
@@ -46,7 +55,7 @@ namespace AdvancedAlgorithms
         {
             connectingTreesEdge = null;
             var F = new UndirectedGraph<int, Edge<int>>(); //Forest F
-            HashSet<Edge<int>> usedEdges = new HashSet<Edge<int>>();
+            HashSet<Edge<int>> usedEdges = new HashSet<Edge<int>>(new EdgeComparer());
             var vertices = new List<int>(g.Vertices).ToArray();
             var edges = new List<Edge<int>>(g.Edges).ToArray();
             bool[] verticesUsed = new bool[g.VertexCount];
@@ -88,7 +97,7 @@ namespace AdvancedAlgorithms
                     continue;
                 verticesUsed[v] = true;
                 verticesInF.Remove(v);
-                    
+
                 if (verticesLevels[v] != -1 && verticesLevels[v] % 2 == 1)
                     continue;
                 foreach (var edgeVW in g.AdjacentEdges(v))
@@ -189,12 +198,12 @@ namespace AdvancedAlgorithms
         }
 
         /// <summary>
-        /// TODO: Finish this function
         /// </summary>
         /// <param name="augmentingPath"></param>
         /// <param name="blossom"></param>
         /// <returns></returns>
-        public static List<Edge<int>> LiftAugmentingPath(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex)
+        // TODO: Debug through it
+        private static List<Edge<int>> LiftAugmentingPath(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex)
         {
             var liftedAugmentingPath = new List<Edge<int>>(augmentingPath);
             var blossomVertices = new HashSet<int>();
@@ -209,7 +218,7 @@ namespace AdvancedAlgorithms
             bool isFirstTree = true;
             foreach (var edge in augmentingPath)
             {
-                if (edge == edgeBetweenTrees)
+                if (new EdgeComparer().Equals(edge, edgeBetweenTrees))
                 {
                     isFirstTree = false;
                     continue;
@@ -274,6 +283,7 @@ namespace AdvancedAlgorithms
             return liftedAugmentingPath;
         }
 
+        // Tested
         public static UndirectedGraph<int, Edge<int>> ContractGraph(UndirectedGraph<int, Edge<int>> g, List<Edge<int>> blossom, out int superVertex, IEnumerable<Edge<int>> matching)
         {
             var gNew = new UndirectedGraph<int, Edge<int>>();
@@ -297,7 +307,7 @@ namespace AdvancedAlgorithms
                 matchedVertices.Add(edge.Target);
             }
 
-            superVertex = blossomVertices.First( vertex => !matchedVertices.Contains(vertex));
+            superVertex = blossomVertices.First(vertex => !matchedVertices.Contains(vertex));
 
 
 
@@ -333,10 +343,11 @@ namespace AdvancedAlgorithms
             return gNew;
         }
 
+        // Tested
         public static List<Edge<int>> ContractMatching(List<Edge<int>> matching, List<Edge<int>> blossom)
         {
             var contractedMatching = new List<Edge<int>>();
-            var blossomHashSet = new HashSet<Edge<int>>(blossom);
+            var blossomHashSet = new HashSet<Edge<int>>(blossom, new EdgeComparer());
             foreach (var edge in matching)
             {
                 if (blossomHashSet.Contains(edge))
@@ -347,6 +358,7 @@ namespace AdvancedAlgorithms
             return contractedMatching;
         }
 
+        // Tested
         public static bool DFSSearch(int source, int destination, Dictionary<int, bool> visited, UndirectedGraph<int, Edge<int>> g, Stack<Edge<int>> stack)
         {
             if (source == destination)
@@ -373,12 +385,13 @@ namespace AdvancedAlgorithms
             return destinationFound;
         }
 
+        // Tested
         public static bool TryGetRootForVertex(UndirectedGraph<int, Edge<int>> forest, int vertex,
             int[] verticesLevels, out int rootVertex, out List<Edge<int>> pathToRoot)
         {
             pathToRoot = new List<Edge<int>>();
             rootVertex = -1;
-            if (verticesLevels[vertex] == -1 || forest.ContainsVertex(vertex) == false)
+            if (forest.ContainsVertex(vertex) == false || verticesLevels[vertex] == -1)
             {
                 return false;
             }
@@ -406,6 +419,7 @@ namespace AdvancedAlgorithms
             return true;
         }
 
+        // Tested
         public static int GetTargetVertex(Edge<int> edge, int source)
         {
             if (edge.Source == source)
@@ -413,7 +427,7 @@ namespace AdvancedAlgorithms
             else if (edge.Target == source)
                 return edge.Source;
             else
-                throw new ArgumentException("Incorrect edge or source vertex");
+                throw new ArgumentException("Incorrect edge or source ");
         }
     }
 }

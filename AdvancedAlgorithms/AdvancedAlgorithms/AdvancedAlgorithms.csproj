@@ -66,6 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EdgeComparer.cs" />
     <Compile Include="EdmondsAlgorithm.cs" />
     <Compile Include="FileParser.cs" />
     <Compile Include="JTAlgorithm.cs" />

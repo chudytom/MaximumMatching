@@ -674,5 +674,73 @@ namespace AdvancedAlgorithmsTests
             return true;
         }
 
+        [TestMethod]
+        public void LiftAugmentingPath_ShouldReturn_ExpectedLiftedAugmentingPath()
+        {
+            var g = GetSampleForest(out int[] levels);
+            var edgeBetweenTrees = new Edge<int>(10, 14);
+            g.AddEdge(new Edge<int>(10, 15));
+            var blossom = new List<Edge<int>>
+            {
+                new Edge<int>(15,16),
+                new Edge<int>(14,15),
+                new Edge<int>(14,17),
+                new Edge<int>(17,18),
+                new Edge<int>(18,16),
+            };
+            var augmentingPath = new List<Edge<int>>()
+            {
+                new Edge<int>(2,3),
+                new Edge<int>(3,4),
+                new Edge<int>(4,9),
+                new Edge<int>(10,9),
+                new Edge<int>(10,14),
+                new Edge<int>(14,13),
+                new Edge<int>(13,12),
+            };
+            var expectedAugmentingPath = new List<Edge<int>>
+            {
+                new Edge<int>(2,3),
+                new Edge<int>(3,4),
+                new Edge<int>(4,9),
+                new Edge<int>(10,9),
+                new Edge<int>(10,15),
+                new Edge<int>(15,16),
+                new Edge<int>(16,18),
+                new Edge<int>(18,17),
+                new Edge<int>(17,14),
+                new Edge<int>(13,14),
+                new Edge<int>(12,13),
+            };
+
+            int superVertex = 14;
+            var liftedAugmentingPath = EdmondsAlgorithm.LiftAugmentingPath(augmentingPath, blossom, g, edgeBetweenTrees, superVertex);
+
+
+
+            bool areEdgesInOriginalGraph = AreEdgesInOriginalGraph(g, liftedAugmentingPath);
+            Assert.IsTrue(areEdgesInOriginalGraph, "Edges in lifted path do not belong to the graph");
+
+            Assert.AreEqual(1, liftedAugmentingPath.Count % 2, "Lifted path has even number of edges");
+
+            var pathComparer = new PathComparer();
+            Assert.IsTrue(pathComparer.Equals(expectedAugmentingPath, liftedAugmentingPath), "Paths do not match");
+        }
+
+        private static bool AreEdgesInOriginalGraph(UndirectedGraph<int, Edge<int>> g, List<Edge<int>> liftedAugmentingPath)
+        {
+            var edgesSet = new HashSet<Edge<int>>(g.Edges, new EdgeComparer());
+            bool areEdgesInOriginalGraph = true;
+            foreach (var edge in liftedAugmentingPath)
+            {
+                if (!edgesSet.Contains(edge))
+                {
+                    areEdgesInOriginalGraph = false;
+                    break;
+                }
+            }
+
+            return areEdgesInOriginalGraph;
+        }
     }
 }

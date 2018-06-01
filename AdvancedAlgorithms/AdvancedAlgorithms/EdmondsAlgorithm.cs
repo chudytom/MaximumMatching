@@ -203,9 +203,9 @@ namespace AdvancedAlgorithms
         /// <param name="blossom"></param>
         /// <returns></returns>
         // TODO: Debug through it
-        private static List<Edge<int>> LiftAugmentingPath(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex)
+        public static List<Edge<int>> LiftAugmentingPath(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex)
         {
-            var liftedAugmentingPath = new List<Edge<int>>(augmentingPath);
+            var liftedAugmentingPath = new List<Edge<int>>();
             var blossomVertices = new HashSet<int>();
             foreach (var edge in blossom)
             {
@@ -229,9 +229,7 @@ namespace AdvancedAlgorithms
                     pathInSecondTree.Add(edge);
             }
 
-            int edgeBetweenVertexInFirstTree = edgeBetweenTrees.Source;
-            if (edgeBetweenVertexInFirstTree == superVertex)
-                edgeBetweenVertexInFirstTree = edgeBetweenTrees.Target;
+            int edgeBetweenVertexInFirstTree = GetTargetVertex(edgeBetweenTrees, superVertex);
 
             Edge<int> edgeBetweenInFullGraph = null;
 
@@ -247,20 +245,42 @@ namespace AdvancedAlgorithms
 
             if (edgeBetweenInFullGraph == null)
                 throw new ArgumentException();
-            int edgeBetweenVertexInSecondTree = edgeBetweenInFullGraph.Target;
-            if (edgeBetweenVertexInSecondTree == edgeBetweenVertexInFirstTree)
-                edgeBetweenVertexInSecondTree = edgeBetweenInFullGraph.Source;
+            int edgeBetweenVertexInSecondTree = GetTargetVertex(edgeBetweenInFullGraph, edgeBetweenVertexInFirstTree);
 
             var pathFromBlossom = new List<Edge<int>>(blossom);
+            //Edge<int> edgeToRemove = null; 
+            //Not necessarily it's only one Edge
             foreach (var edge in blossom)
             {
                 if (edge.Source == edgeBetweenVertexInSecondTree && edge.Target == superVertex ||
                     edge.Target == edgeBetweenVertexInSecondTree && edge.Source == superVertex)
                 {
                     pathFromBlossom.Remove(edge);
+                    //edgeToRemove = edge;
                     break;
                 }
             }
+
+            var blossomGraph = new UndirectedGraph<int, Edge<int>>();
+            blossomGraph.AddVertexRange(g.Vertices);
+            foreach (var edge in pathFromBlossom)
+            {
+                blossomGraph.AddEdge(edge);
+            }
+            var pathStack = new Stack<Edge<int>>();
+            pathFromBlossom.Clear();
+
+            var visited = new Dictionary<int, bool>();
+            foreach (var vertex in blossomGraph.Vertices)
+            {
+                visited.Add(vertex, false);
+            }
+            DFSSearch(edgeBetweenVertexInSecondTree, superVertex, visited, blossomGraph, pathStack);
+            while (pathStack.Count != 0)
+            {
+                pathFromBlossom.Add(pathStack.Pop());
+            }
+
             //if (pathFromBlossom.Count == blossom.Count)
             //    throw new ArgumentException();
 
@@ -268,17 +288,15 @@ namespace AdvancedAlgorithms
             {
                 liftedAugmentingPath.Add(edge);
             }
-            augmentingPath.Add(edgeBetweenInFullGraph);
+            liftedAugmentingPath.Add(edgeBetweenInFullGraph);
             foreach (var edge in pathFromBlossom)
             {
-                augmentingPath.Add(edge);
+                liftedAugmentingPath.Add(edge);
             }
             foreach (var edge in pathInSecondTree)
             {
-                augmentingPath.Add(edge);
+                liftedAugmentingPath.Add(edge);
             }
-
-
 
             return liftedAugmentingPath;
         }

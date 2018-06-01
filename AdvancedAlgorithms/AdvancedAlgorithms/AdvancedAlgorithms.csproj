@@ -70,6 +70,7 @@
     <Compile Include="EdmondsAlgorithm.cs" />
     <Compile Include="FileParser.cs" />
     <Compile Include="JTAlgorithm.cs" />
+    <Compile Include="PathComparer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

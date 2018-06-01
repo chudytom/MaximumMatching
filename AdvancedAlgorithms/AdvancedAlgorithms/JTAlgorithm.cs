@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AdvancedAlgorithms
 {
@@ -18,15 +16,15 @@ namespace AdvancedAlgorithms
             while(edgesList.Count > 0)
             {
                 Console.WriteLine("Iteration: " + numberOfIterations);
-                var edge = edgesList.First();
+                var edge = edgesList.First();               
                 e1.Add(pairs[edge.Source]);
                 e2.Add(pairs[edge.Target]);
 
 
-                Console.WriteLine("Pairs: " + "I: " + edge.Source.ToString() + " II: " + edge.Target.ToString());
+                Console.WriteLine("Pairs: " + "I: " + pairs[edge.Source] + " II: " + pairs[edge.Target]);
 
-
-                // remove edges and vertices
+                // remove edge (from edgeList, from graph + its vertices from graph)
+                edgesList.Remove(edge);
                 g.RemoveEdge(edge);
                 g.RemoveVertex(edge.Source);
                 g.RemoveVertex(edge.Target);
@@ -35,6 +33,7 @@ namespace AdvancedAlgorithms
 
             while(g.VertexCount > 0)
             {
+                Console.WriteLine("Iteration: " + numberOfIterations);
                 e1.Add(pairs[g.Vertices.First()]);
                 Console.WriteLine("Pairs: " + "I: " + pairs[g.Vertices.First()] + " II: :(");
                 g.RemoveVertex(g.Vertices.First());

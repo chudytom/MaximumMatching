@@ -66,6 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GraphGenerator.cs" />
     <Compile Include="EdgeComparer.cs" />
     <Compile Include="EdmondsAlgorithm.cs" />
     <Compile Include="FileParser.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="PathComparer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

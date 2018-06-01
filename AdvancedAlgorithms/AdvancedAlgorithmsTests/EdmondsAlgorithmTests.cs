@@ -55,13 +55,9 @@ namespace AdvancedAlgorithmsTests
             int correctEdgesCount = 3;
 
             var maximumMatching = EdmondsAlgorithm.CalculateMaximumMatching(g);
-            Assert.AreEqual(correctEdgesCount, maximumMatching.Count);
+            var testResult = IsMatchingCorrect(maximumMatching, g, correctEdgesCount);
 
-            var matchedVertices = GetMatchedVertices(maximumMatching);
-            Assert.AreEqual(correctEdgesCount * 2, matchedVertices.Count);
-
-            bool allEdgesInGraph = AreAllEdgesInGraph(g, maximumMatching);
-            Assert.IsTrue(allEdgesInGraph);
+            Assert.IsTrue(testResult.IsCorrect, testResult.ErrorMessage);
         }
 
         [TestMethod]
@@ -71,13 +67,95 @@ namespace AdvancedAlgorithmsTests
             int correctEdgesCount = 4;
 
             var maximumMatching = EdmondsAlgorithm.CalculateMaximumMatching(g);
-            Assert.AreEqual(correctEdgesCount, maximumMatching.Count);
+            var testResult = IsMatchingCorrect(maximumMatching, g, correctEdgesCount);
 
-            var matchedVertices = GetMatchedVertices(maximumMatching);
-            Assert.AreEqual(correctEdgesCount * 2, matchedVertices.Count);
+            Assert.IsTrue(testResult.IsCorrect, testResult.ErrorMessage);
+        }
 
-            bool allEdgesInGraph = AreAllEdgesInGraph(g, maximumMatching);
-            Assert.IsTrue(allEdgesInGraph);
+        [TestMethod]
+        public void MaximumMatchingCount_FullGraph_10Vertices()
+        {
+            var generator = new GraphGenerator();
+            int verticesCount = 10;
+            var g = generator.GetFullGraph(verticesCount);
+            int correctEdgesCount = 5;
+
+            var maximumMatching = EdmondsAlgorithm.CalculateMaximumMatching(g);
+            var testResult = IsMatchingCorrect(maximumMatching, g, correctEdgesCount);
+
+            Assert.IsTrue(testResult.IsCorrect, testResult.ErrorMessage);
+        }
+
+        [TestMethod]
+        public void MaximumMatchingCount_FullGraph_5Vertices()
+        {
+            var generator = new GraphGenerator();
+            int verticesCount = 5;
+            var g = generator.GetFullGraph(verticesCount);
+            int correctEdgesCount = 2;
+
+            var maximumMatching = EdmondsAlgorithm.CalculateMaximumMatching(g);
+            var testResult = IsMatchingCorrect(maximumMatching, g, correctEdgesCount);
+
+            Assert.IsTrue(testResult.IsCorrect, testResult.ErrorMessage);
+        }
+
+        [TestMethod]
+        public void MaximumMatchingCount_FullGraph_6Vertices()
+        {
+            var generator = new GraphGenerator();
+            int verticesCount = 6;
+            var g = generator.GetFullGraph(verticesCount);
+            int correctEdgesCount = 3;
+
+            var maximumMatching = EdmondsAlgorithm.CalculateMaximumMatching(g);
+            var testResult = IsMatchingCorrect(maximumMatching, g, correctEdgesCount);
+
+            Assert.IsTrue(testResult.IsCorrect, testResult.ErrorMessage);
+        }
+
+        [TestMethod]
+        public void MaximumMatchingCount_FullGraph_7Vertices()
+        {
+            var generator = new GraphGenerator();
+            int verticesCount = 7;
+            var g = generator.GetFullGraph(verticesCount);
+            int correctEdgesCount = 3;
+
+            var maximumMatching = EdmondsAlgorithm.CalculateMaximumMatching(g);
+            var testResult = IsMatchingCorrect(maximumMatching, g, correctEdgesCount);
+
+            Assert.IsTrue(testResult.IsCorrect, testResult.ErrorMessage);
+        }
+
+        [TestMethod]
+        public void MaximumMatchingCount_FullGraph_8Vertices()
+        {
+            var generator = new GraphGenerator();
+            int verticesCount = 8;
+            var g = generator.GetFullGraph(verticesCount);
+            int correctEdgesCount = 4;
+
+            var maximumMatching = EdmondsAlgorithm.CalculateMaximumMatching(g);
+            var testResult = IsMatchingCorrect(maximumMatching, g, correctEdgesCount);
+
+            Assert.IsTrue(testResult.IsCorrect, testResult.ErrorMessage);
+        }
+
+        private AdvancedAlgorithms.TestResult IsMatchingCorrect(List<Edge<int>> matching, UndirectedGraph<int, Edge<int>> g, int correctEdgesCount)
+        {
+            if (correctEdgesCount != matching.Count)
+                return new AdvancedAlgorithms.TestResult(false, $"Incorrect matching edges count. " +
+                    $"Expected <{correctEdgesCount}>. Acutal <{matching.Count}>");
+            var matchedVertices = GetMatchedVertices(matching);
+            if (correctEdgesCount * 2 != matchedVertices.Count)
+                return new AdvancedAlgorithms.TestResult(false, $"Some vertices in more than one edge." +
+                    $" Expected <{correctEdgesCount * 2}>. Acutal <{matchedVertices.Count}>");
+            bool allEdgesInGraph = AreAllEdgesInGraph(g, matching);
+            if (!allEdgesInGraph)
+                return new AdvancedAlgorithms.TestResult(false, "Not all edges are a part of the original graph");
+            else
+                return new AdvancedAlgorithms.TestResult(true, "");
         }
 
         private static bool AreAllEdgesInGraph(UndirectedGraph<int, Edge<int>> g, List<Edge<int>> edges)

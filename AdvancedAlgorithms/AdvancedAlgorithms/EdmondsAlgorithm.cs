@@ -53,7 +53,7 @@ namespace AdvancedAlgorithms
         /// <returns></returns>
         private static List<Edge<int>> FindAugmentingPath(UndirectedGraph<int, Edge<int>> g, List<Edge<int>> currentMatching, out Edge<int> connectingTreesEdge)
         {
-            connectingTreesEdge = null;
+            //connectingTreesEdge = null;
             var F = new UndirectedGraph<int, Edge<int>>(); //Forest F
             HashSet<Edge<int>> usedEdges = new HashSet<Edge<int>>(new EdgeComparer());
             var vertices = new List<int>(g.Vertices).ToArray();
@@ -126,6 +126,7 @@ namespace AdvancedAlgorithms
                     }
                     else
                     {
+                        connectingTreesEdge = edgeVW;
                         if (verticesLevels[w] == -1)
                             throw new ArgumentException();
                         if (verticesLevels[w] % 2 == 1)
@@ -165,7 +166,7 @@ namespace AdvancedAlgorithms
                                     visited.Add(vertex, false);
                                 }
                                 var pathStack = new Stack<Edge<int>>();
-                                bool pathFound = DFSSearch(v, w, visited, g, pathStack);
+                                bool pathFound = DFSSearch(v, w, visited, F, pathStack);
                                 if (!pathFound)
                                     throw new ArgumentException();
                                 var pathFromVToW = new List<Edge<int>>();
@@ -176,6 +177,9 @@ namespace AdvancedAlgorithms
 
                                 var blossom = new List<Edge<int>>(pathFromVToW);
                                 blossom.Add(edgeVW);
+                                TestResult blossomCorrectResult = VerifyBlossom(blossom, currentMatching);
+                                if (!blossomCorrectResult.IsCorrect)
+                                    throw new ArgumentException(blossomCorrectResult.ErrorMessage);
 
                                 var contractedMatching = ContractMatching(currentMatching, blossom);
                                 var contractedGraph = ContractGraph(g, blossom, out int superVertex, currentMatching);
@@ -183,7 +187,6 @@ namespace AdvancedAlgorithms
                                 var contractedAugmentingPath = FindAugmentingPath(contractedGraph, contractedMatching, out Edge<int> edgeBetweenTrees);
                                 if (contractedAugmentingPath.Count == 0)
                                     return contractedAugmentingPath;
-
                                 return LiftAugmentingPath(contractedAugmentingPath, blossom, g, edgeBetweenTrees, superVertex);
                             }
                         }
@@ -193,8 +196,47 @@ namespace AdvancedAlgorithms
                 verticesInF.Remove(v);
                 verticesUsed[v] = true;
             }
-
+            connectingTreesEdge = null;
             return new List<Edge<int>>();
+        }
+
+        private static TestResult VerifyBlossom(List<Edge<int>> blossom, List<Edge<int>> matching)
+        {
+            
+            if (blossom.Count % 2 == 0)
+                return new TestResult(false, "The cycle has an even number of edges");
+            var matchedVerticesInGraph = GetMatchedVertices(matching);
+            var matchedVerticesInBlossom = new HashSet<int>();
+            var unmatchedVerticesInBlossom = new HashSet<int>();
+            foreach (var edge in blossom)
+            {
+                if (matchedVerticesInGraph.Contains(edge.Source))
+                    matchedVerticesInBlossom.Add(edge.Source);
+                else
+                    unmatchedVerticesInBlossom.Add(edge.Source);
+                if (matchedVerticesInGraph.Contains(edge.Target))
+                    matchedVerticesInBlossom.Add(edge.Target);
+                else
+                    unmatchedVerticesInBlossom.Add(edge.Target);
+            }
+            if (unmatchedVerticesInBlossom.Count != 1)
+                return new TestResult(false, "There should be one unmatched vertex in blossom" +
+                    $"Expected: <{1}>. Actual <{unmatchedVerticesInBlossom.Count}>");
+            if(matchedVerticesInBlossom.Count != (blossom.Count -1))
+                return new TestResult(false, "There should be all matched vertices in blossom except one" +
+                    $"Expected: <{blossom.Count - 1}>. Actual <{matchedVerticesInBlossom.Count}>");
+            return new TestResult(true, "");
+        }
+
+        private static HashSet<int> GetMatchedVertices(List<Edge<int>> matching)
+        {
+            var matchedVertices = new HashSet<int>();
+            foreach (var edge in matching)
+            {
+                matchedVertices.Add(edge.Source);
+                matchedVertices.Add(edge.Target);
+            }
+            return matchedVertices;
         }
 
         /// <summary>
@@ -249,7 +291,6 @@ namespace AdvancedAlgorithms
 
             var pathFromBlossom = new List<Edge<int>>(blossom);
             //Edge<int> edgeToRemove = null; 
-            //Not necessarily it's only one Edge
             foreach (var edge in blossom)
             {
                 if (edge.Source == edgeBetweenVertexInSecondTree && edge.Target == superVertex ||

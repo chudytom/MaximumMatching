@@ -23,11 +23,19 @@ namespace AdvancedAlgorithms
 
                 Console.WriteLine("Pairs: " + "I: " + pairs[edge.Source] + " II: " + pairs[edge.Target]);
 
+                // we will remove vertices if they were not removed before
+                // we will not remove edges (we dont care about them, we have edgesList)
                 // remove edge (from edgeList, from graph + its vertices from graph)
                 edgesList.Remove(edge);
-                g.RemoveEdge(edge);
-                g.RemoveVertex(edge.Source);
-                g.RemoveVertex(edge.Target);
+                //g.RemoveEdge(edge); -> we dont need it
+                if(g.Vertices.Contains(edge.Source))
+                {
+                    g.RemoveVertex(edge.Source);
+                }
+                if(g.Vertices.Contains(edge.Target))
+                {
+                    g.RemoveVertex(edge.Target);
+                }             
                 numberOfIterations++;
             }
 

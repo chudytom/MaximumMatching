@@ -11,7 +11,41 @@ namespace AdvancedAlgorithms
         public static List<Edge<int>> CalculateMaximumMatching(UndirectedGraph<int, Edge<int>> g)
         {
             var initialMatching = new List<Edge<int>>();
-            return FindMaximumMatching(g, initialMatching);
+            var result = FindMaximumMatching(g, initialMatching);
+            var badEdges = new List<Edge<int>>();
+            if(!CheckResult(result, ref badEdges))
+            {
+                Console.WriteLine("BAD MAXIMUM MATCHING !!!");
+                // maybe we should remove bad edges and return maximum matching without them ???
+                foreach(var edge in badEdges)
+                {
+                    result.Remove(edge);
+                }
+                Console.WriteLine("Removed {0} bad edges from maximum matching", badEdges.Count);
+
+            }
+            return result;
+        }
+
+        private static bool CheckResult(List<Edge<int>> edgesList, ref List<Edge<int>> badEdges)
+        {
+            List<int> vertices = new List<int>();
+            int counter = 0;
+            foreach(var edge in edgesList)
+            {
+                if(vertices.Contains(edge.Source) || vertices.Contains(edge.Target))
+                {
+                    badEdges.Add(edge);
+                }
+                counter++;
+                vertices.Add(edge.Source);
+                vertices.Add(edge.Target);
+            }
+            if(badEdges.Count > 0)
+            {
+                return false;
+            }
+            return true;
         }
 
         private static List<Edge<int>> FindMaximumMatching(UndirectedGraph<int, Edge<int>> G, List<Edge<int>> M)

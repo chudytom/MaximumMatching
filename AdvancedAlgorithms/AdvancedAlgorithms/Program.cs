@@ -41,7 +41,9 @@ namespace AdvancedAlgorithms
                 if(FileParser.TryParseFile(consoleInput, out g, out pairs))
                 {
                     // algorithm
-                    int numberOfIterations = JTAlgorithm.Calculate(g, pairs);
+                    var e1 = new List<Tuple<int, int>>();
+                    var e2 = new List<Tuple<int, int>>();
+                    int numberOfIterations = JTAlgorithm.Calculate(g, pairs, ref e1, ref e2);
                     Console.WriteLine("Policzono : " + numberOfIterations + " iteracji.");
                 }
                 else

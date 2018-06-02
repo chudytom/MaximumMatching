@@ -7,11 +7,11 @@ namespace AdvancedAlgorithms
 {
     public static class JTAlgorithm
     {
-        public static int Calculate(UndirectedGraph<int, Edge<int>> g, List<Tuple<int, int>> pairs)
+        public static int Calculate(UndirectedGraph<int, Edge<int>> g, List<Tuple<int, int>> pairs, ref List<Tuple<int, int>> e1, ref List<Tuple<int, int>> e2)
         {
             int numberOfIterations = 0;
-            List<Tuple<int, int>> e1 = new List<Tuple<int, int>>();
-            List<Tuple<int, int>> e2 = new List<Tuple<int, int>>();
+            e1 = new List<Tuple<int, int>>();
+            e2 = new List<Tuple<int, int>>();
             var edgesList = EdmondsAlgorithm.CalculateMaximumMatching(g);
             while(edgesList.Count > 0)
             {

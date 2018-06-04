@@ -126,7 +126,7 @@ namespace AdvancedAlgorithms
                     }
                     else
                     {
-                        connectingTreesEdge = edgeVW;
+                        //connectingTreesEdge = edgeVW;
                         if (verticesLevels[w] == -1)
                             throw new ArgumentException();
                         if (verticesLevels[w] % 2 == 1)
@@ -155,6 +155,8 @@ namespace AdvancedAlgorithms
                                     augmentingPath.Add(wRootPath.Dequeue());
                                 }
                                 connectingTreesEdge = edgeVW;
+                                if (augmentingPath.Count % 2 == 0)
+                                    throw new ArgumentException();
                                 return augmentingPath;
                             }
                             else
@@ -186,8 +188,18 @@ namespace AdvancedAlgorithms
 
                                 var contractedAugmentingPath = FindAugmentingPath(contractedGraph, contractedMatching, out Edge<int> edgeBetweenTrees);
                                 if (contractedAugmentingPath.Count == 0)
+                                {
+                                    connectingTreesEdge = null;
                                     return contractedAugmentingPath;
-                                return LiftAugmentingPath(contractedAugmentingPath, blossom, g, edgeBetweenTrees, superVertex);
+                                }
+
+                                // LiftAugmentingPath should return some edge
+                                var liftedAugmentingPath = LiftAugmentingPath(contractedAugmentingPath, blossom, g, edgeBetweenTrees, superVertex, out Edge<int> liftedEdgeBetweenTrees);
+                                if (liftedAugmentingPath.Count % 2 == 0)
+                                    throw new ArgumentException();
+                                //connectingTreesEdge = liftedEdgeBetweenTrees;
+                                connectingTreesEdge = edgeVW;
+                                return liftedAugmentingPath;
                             }
                         }
                     }
@@ -245,8 +257,10 @@ namespace AdvancedAlgorithms
         /// <param name="blossom"></param>
         /// <returns></returns>
         // TODO: Debug through it
-        public static List<Edge<int>> LiftAugmentingPath(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex)
+        public static List<Edge<int>> LiftAugmentingPath(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex, out Edge<int> liftedEdgeBetweenTrees)
         {
+            liftedEdgeBetweenTrees = edgeBetweenTrees;
+            return augmentingPath;
             var liftedAugmentingPath = new List<Edge<int>>();
             var blossomVertices = new HashSet<int>();
             foreach (var edge in blossom)

@@ -214,7 +214,7 @@ namespace AdvancedAlgorithms
 
         private static TestResult VerifyBlossom(List<Edge<int>> blossom, List<Edge<int>> matching)
         {
-            
+
             if (blossom.Count % 2 == 0)
                 return new TestResult(false, "The cycle has an even number of edges");
             var matchedVerticesInGraph = GetMatchedVertices(matching);
@@ -234,7 +234,7 @@ namespace AdvancedAlgorithms
             if (unmatchedVerticesInBlossom.Count != 1)
                 return new TestResult(false, "There should be one unmatched vertex in blossom" +
                     $"Expected: <{1}>. Actual <{unmatchedVerticesInBlossom.Count}>");
-            if(matchedVerticesInBlossom.Count != (blossom.Count -1))
+            if (matchedVerticesInBlossom.Count != (blossom.Count - 1))
                 return new TestResult(false, "There should be all matched vertices in blossom except one" +
                     $"Expected: <{blossom.Count - 1}>. Actual <{matchedVerticesInBlossom.Count}>");
             return new TestResult(true, "");
@@ -259,8 +259,61 @@ namespace AdvancedAlgorithms
         // TODO: Debug through it
         public static List<Edge<int>> LiftAugmentingPath(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex, out Edge<int> liftedEdgeBetweenTrees)
         {
+
+            //GetPathEnds(augmentingPath, out int pathBeginnign, out int pathEnd);
+            if (augmentingPath.Count == 1)
+                return LiftingV1(augmentingPath, blossom, g, edgeBetweenTrees, superVertex, out liftedEdgeBetweenTrees);
+            else
+                return LiftingV2(augmentingPath, blossom, g, edgeBetweenTrees, superVertex, out liftedEdgeBetweenTrees);
+
+            //return LiftingV3(augmentingPath, blossom, g, edgeBetweenTrees, superVertex, out liftedEdgeBetweenTrees);
+        }
+
+        private static void GetPathEnds(List<Edge<int>> augmentingPath, out int beginning, out int end)
+        {
+            if (augmentingPath.Count == 0)
+                throw new ArgumentException();
+            int previousVertex = -1, firstVertex, lastVertex;
+            var path = new Queue<Edge<int>>(augmentingPath);
+            var firstEdge = path.Dequeue();
+
+            firstVertex = firstEdge.Source;
+            lastVertex = firstEdge.Target;
+            if (path.Count > 0)
+            {
+                var secondEdge = path.Peek();
+                if (firstVertex == secondEdge.Source || firstVertex == firstEdge.Target)
+                {
+                    previousVertex = firstVertex;
+                    firstVertex = lastVertex;
+                }
+                else
+                {
+                    previousVertex = lastVertex;
+                }
+                while (path.Count != 0)
+                {
+                    var edge = path.Dequeue();
+                    if (edge.Source == previousVertex)
+                        previousVertex = edge.Target;
+                    else
+                        previousVertex = edge.Source;
+                }
+                lastVertex = previousVertex;
+            }
+            beginning = firstVertex;
+            end = lastVertex;
+        }
+
+        private static List<Edge<int>> LiftingV1(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex, out Edge<int> liftedEdgeBetweenTrees)
+        {
             liftedEdgeBetweenTrees = edgeBetweenTrees;
             return augmentingPath;
+        }
+
+        private static List<Edge<int>> LiftingV2(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex, out Edge<int> liftedEdgeBetweenTrees)
+        {
+            liftedEdgeBetweenTrees = edgeBetweenTrees;
             var liftedAugmentingPath = new List<Edge<int>>();
             var blossomVertices = new HashSet<int>();
             foreach (var edge in blossom)
@@ -355,6 +408,13 @@ namespace AdvancedAlgorithms
 
             return liftedAugmentingPath;
         }
+
+        private static List<Edge<int>> LiftingV3(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex, out Edge<int> liftedEdgeBetweenTrees)
+        {
+            liftedEdgeBetweenTrees = edgeBetweenTrees;
+            return augmentingPath;
+        }
+
 
         // Tested
         public static UndirectedGraph<int, Edge<int>> ContractGraph(UndirectedGraph<int, Edge<int>> g, List<Edge<int>> blossom, out int superVertex, IEnumerable<Edge<int>> matching)

@@ -699,7 +699,7 @@ namespace AdvancedAlgorithms
             return pathFound;
         }
 
-        public static bool DFSSearchRecurse(int source, int destination, Dictionary<int, bool> visited, UndirectedGraph<int, Edge<int>> g, Stack<Edge<int>> stack)
+        private static bool DFSSearchRecurse(int source, int destination, Dictionary<int, bool> visited, UndirectedGraph<int, Edge<int>> g, Stack<Edge<int>> stack)
         {
             if (source == destination)
                 return true;

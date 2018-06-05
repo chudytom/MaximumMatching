@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using AdvancedAlgorithms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using QuickGraph;
 
 namespace AdvancedAlgorithmsTests
 {
@@ -48,5 +50,80 @@ namespace AdvancedAlgorithmsTests
 
             Assert.AreEqual(ExpectedEdgesCountInFullGraph(verticesCount), g.EdgeCount);
         }
+
+        [TestMethod]
+        public void GetCycleGraph_CountTest_ShouldRetun_2()
+        {
+            int verticesCount = 2;
+            var generator = new GraphGenerator();
+            var g = generator.GetCycleGraph(verticesCount);
+
+            Assert.AreEqual(verticesCount, g.EdgeCount);
+
+            foreach (var source in g.Vertices)
+            {
+                foreach (var target in g.Vertices)
+                {
+                    Assert.IsTrue(EdmondsAlgorithm.DFSSearch(source, target, g, out List<Edge<int>> path));
+                }
+            }
+        }
+
+        [TestMethod]
+        public void GetCycleGraph_CountTest_ShouldRetun_3()
+        {
+            int verticesCount = 3;
+            var generator = new GraphGenerator();
+            var g = generator.GetCycleGraph(verticesCount);
+
+            Assert.AreEqual(verticesCount, g.EdgeCount);
+
+            foreach (var source in g.Vertices)
+            {
+                foreach (var target in g.Vertices)
+                {
+                    Assert.IsTrue(EdmondsAlgorithm.DFSSearch(source, target, g, out List<Edge<int>> path));
+                }
+            }
+        }
+
+        [TestMethod]
+        public void GetCycleGraph_CountTest_ShouldRetun_10()
+        {
+            int verticesCount = 10;
+            var generator = new GraphGenerator();
+            var g = generator.GetCycleGraph(verticesCount);
+
+            Assert.AreEqual(verticesCount, g.EdgeCount);
+
+            foreach (var source in g.Vertices)
+            {
+                foreach (var target in g.Vertices)
+                {
+                    Assert.IsTrue(EdmondsAlgorithm.DFSSearch(source, target, g, out List<Edge<int>> path));
+                }
+            }
+        }
+
+        [TestMethod]
+        public void GetCycleGraph_CountTest_ShouldRetun_100()
+        {
+            int verticesCount = 100;
+            var generator = new GraphGenerator();
+            var g = generator.GetCycleGraph(verticesCount);
+
+            Assert.AreEqual(verticesCount, g.EdgeCount);
+
+            foreach (var source in g.Vertices)
+            {
+                foreach (var target in g.Vertices)
+                {
+                    Assert.IsTrue(EdmondsAlgorithm.DFSSearch(source, target, g, out List<Edge<int>> path));
+                }
+            }
+        }
+
+
+
     }
 }

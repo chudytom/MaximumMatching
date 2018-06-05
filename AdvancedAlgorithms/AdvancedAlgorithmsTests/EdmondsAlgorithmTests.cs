@@ -73,48 +73,6 @@ namespace AdvancedAlgorithmsTests
         }
 
         [TestMethod]
-        public void MaximumMatchingCount_FullGraph_10Vertices()
-        {
-            var generator = new GraphGenerator();
-            int verticesCount = 10;
-            var g = generator.GetFullGraph(verticesCount);
-            int correctEdgesCount = 5;
-
-            var maximumMatching = EdmondsAlgorithm.CalculateMaximumMatching(g);
-            var testResult = VerifyMatching(maximumMatching, g, correctEdgesCount);
-
-            Assert.IsTrue(testResult.IsCorrect, testResult.ErrorMessage);
-        }
-
-        [TestMethod]
-        public void MaximumMatchingCount_FullGraph_15Vertices()
-        {
-            var generator = new GraphGenerator();
-            int verticesCount = 15;
-            var g = generator.GetFullGraph(verticesCount);
-            int correctEdgesCount = 7;
-
-            var maximumMatching = EdmondsAlgorithm.CalculateMaximumMatching(g);
-            var testResult = VerifyMatching(maximumMatching, g, correctEdgesCount);
-
-            Assert.IsTrue(testResult.IsCorrect, testResult.ErrorMessage);
-        }
-
-        [TestMethod]
-        public void MaximumMatchingCount_FullGraph_20Vertices()
-        {
-            var generator = new GraphGenerator();
-            int verticesCount = 20;
-            var g = generator.GetFullGraph(verticesCount);
-            int correctEdgesCount = 10;
-
-            var maximumMatching = EdmondsAlgorithm.CalculateMaximumMatching(g);
-            var testResult = VerifyMatching(maximumMatching, g, correctEdgesCount);
-
-            Assert.IsTrue(testResult.IsCorrect, testResult.ErrorMessage);
-        }
-
-        [TestMethod]
         public void MaximumMatchingCount_FullGraph_5Vertices()
         {
             var generator = new GraphGenerator();
@@ -163,6 +121,119 @@ namespace AdvancedAlgorithmsTests
             int verticesCount = 8;
             var g = generator.GetFullGraph(verticesCount);
             int correctEdgesCount = 4;
+
+            var maximumMatching = EdmondsAlgorithm.CalculateMaximumMatching(g);
+            var testResult = VerifyMatching(maximumMatching, g, correctEdgesCount);
+
+            Assert.IsTrue(testResult.IsCorrect, testResult.ErrorMessage);
+        }
+
+
+        [TestMethod]
+        public void MaximumMatchingCount_FullGraph_10Vertices()
+        {
+            var generator = new GraphGenerator();
+            int verticesCount = 10;
+            var g = generator.GetFullGraph(verticesCount);
+            int correctEdgesCount = 5;
+
+            var maximumMatching = EdmondsAlgorithm.CalculateMaximumMatching(g);
+            var testResult = VerifyMatching(maximumMatching, g, correctEdgesCount);
+
+            Assert.IsTrue(testResult.IsCorrect, testResult.ErrorMessage);
+        }
+
+        [TestMethod]
+        public void MaximumMatchingCount_FullGraph_15Vertices()
+        {
+            var generator = new GraphGenerator();
+            int verticesCount = 15;
+            var g = generator.GetFullGraph(verticesCount);
+            int correctEdgesCount = 7;
+
+            var maximumMatching = EdmondsAlgorithm.CalculateMaximumMatching(g);
+            var testResult = VerifyMatching(maximumMatching, g, correctEdgesCount);
+
+            Assert.IsTrue(testResult.IsCorrect, testResult.ErrorMessage);
+        }
+
+        [TestMethod]
+        public void MaximumMatchingCount_FullGraph_20Vertices()
+        {
+            var generator = new GraphGenerator();
+            int verticesCount = 20;
+            var g = generator.GetFullGraph(verticesCount);
+            int correctEdgesCount = 10;
+
+            var maximumMatching = EdmondsAlgorithm.CalculateMaximumMatching(g);
+            var testResult = VerifyMatching(maximumMatching, g, correctEdgesCount);
+
+            Assert.IsTrue(testResult.IsCorrect, testResult.ErrorMessage);
+        }
+
+        [TestMethod]
+        public void MaximumMatchingCount_FullGraph_50Vertices()
+        {
+            var generator = new GraphGenerator();
+            int verticesCount = 50;
+            var g = generator.GetFullGraph(verticesCount);
+            int correctEdgesCount = 25;
+
+            var maximumMatching = EdmondsAlgorithm.CalculateMaximumMatching(g);
+            var testResult = VerifyMatching(maximumMatching, g, correctEdgesCount);
+
+            Assert.IsTrue(testResult.IsCorrect, testResult.ErrorMessage);
+        }
+
+        [TestMethod]
+        public void MaximumMatchingCount_CycleGraph_2Vertices()
+        {
+            var generator = new GraphGenerator();
+            int verticesCount = 2;
+            var g = generator.GetCycleGraph(verticesCount);
+            int correctEdgesCount = 1;
+
+            var maximumMatching = EdmondsAlgorithm.CalculateMaximumMatching(g);
+            var testResult = VerifyMatching(maximumMatching, g, correctEdgesCount);
+
+            Assert.IsTrue(testResult.IsCorrect, testResult.ErrorMessage);
+        }
+
+        [TestMethod]
+        public void MaximumMatchingCount_CycleGraph_3Vertices()
+        {
+            var generator = new GraphGenerator();
+            int verticesCount = 3;
+            var g = generator.GetCycleGraph(verticesCount);
+            int correctEdgesCount = 1;
+
+            var maximumMatching = EdmondsAlgorithm.CalculateMaximumMatching(g);
+            var testResult = VerifyMatching(maximumMatching, g, correctEdgesCount);
+
+            Assert.IsTrue(testResult.IsCorrect, testResult.ErrorMessage);
+        }
+
+        [TestMethod]
+        public void MaximumMatchingCount_CycleGraph_49Vertices()
+        {
+            var generator = new GraphGenerator();
+            int verticesCount = 49;
+            var g = generator.GetCycleGraph(verticesCount);
+            int correctEdgesCount = 24;
+
+            var maximumMatching = EdmondsAlgorithm.CalculateMaximumMatching(g);
+            var testResult = VerifyMatching(maximumMatching, g, correctEdgesCount);
+
+            Assert.IsTrue(testResult.IsCorrect, testResult.ErrorMessage);
+        }
+
+        [TestMethod]
+        public void MaximumMatchingCount_CycleGraph_100Vertices()
+        {
+            var generator = new GraphGenerator();
+            int verticesCount = 100;
+            var g = generator.GetCycleGraph(verticesCount);
+            int correctEdgesCount = 50;
 
             var maximumMatching = EdmondsAlgorithm.CalculateMaximumMatching(g);
             var testResult = VerifyMatching(maximumMatching, g, correctEdgesCount);
@@ -763,93 +834,6 @@ namespace AdvancedAlgorithmsTests
             return true;
         }
 
-        [TestMethod]
-        //public void LiftAugmentingPath_ShouldReturn_ExpectedLiftedAugmentingPath()
-        //{
-        //    var g = GetSampleForest(out int[] levels);
-        //    var edgeBetweenTrees = new Edge<int>(10, 14);
-        //    g.AddEdge(new Edge<int>(10, 15));
-        //    var blossom = new List<Edge<int>>
-        //    {
-        //        new Edge<int>(15,16),
-        //        new Edge<int>(14,15),
-        //        new Edge<int>(14,17),
-        //        new Edge<int>(17,18),
-        //        new Edge<int>(18,16),
-        //    };
-        //    var augmentingPath = new List<Edge<int>>()
-        //    {
-        //        new Edge<int>(2,3),
-        //        new Edge<int>(3,4),
-        //        new Edge<int>(4,9),
-        //        new Edge<int>(10,9),
-        //        new Edge<int>(10,14),
-        //        new Edge<int>(14,13),
-        //        new Edge<int>(13,12),
-        //    };
-        //    var expectedAugmentingPath = new List<Edge<int>>
-        //    {
-        //        new Edge<int>(2,3),
-        //        new Edge<int>(3,4),
-        //        new Edge<int>(4,9),
-        //        new Edge<int>(10,9),
-        //        new Edge<int>(10,15),
-        //        new Edge<int>(15,16),
-        //        new Edge<int>(16,18),
-        //        new Edge<int>(18,17),
-        //        new Edge<int>(17,14),
-        //        new Edge<int>(13,14),
-        //        new Edge<int>(12,13),
-        //    };
-
-        //    int superVertex = 14;
-        //    var liftedAugmentingPath = EdmondsAlgorithm.LiftAugmentingPath(augmentingPath, blossom, g, edgeBetweenTrees, superVertex, out Edge<int> liftedEdgeBetweenTrees);
-
-        //    var testResult = VerifyLiftedAugmentingPath(g, liftedAugmentingPath, expectedAugmentingPath);
-        //    Assert.IsTrue(testResult.IsCorrect, testResult.ErrorMessage);
-        //}
-
-        //[TestMethod]
-        //public void LiftAugmentingPath_ExpectedException()
-        //{
-        //    int verticesCount = 8;
-        //    var g = new GraphGenerator().GetFullGraph(verticesCount);
-        //    var edgeBetweenTrees = new Edge<int>(4, 6);
-        //    //g.AddEdge(new Edge<int>(10, 15));
-        //    var blossom = new List<Edge<int>>
-        //    {
-        //        new Edge<int>(1,6),
-        //        new Edge<int>(1,3),
-        //        new Edge<int>(3,6),
-        //    };
-        //    var augmentingPath = new List<Edge<int>>()
-        //    {
-        //        new Edge<int>(0,7),
-        //        new Edge<int>(0,5),
-        //        new Edge<int>(5,6),
-        //    };
-        //    var expectedAugmentingPath = new List<Edge<int>>
-        //    {
-        //        new Edge<int>(2,3),
-        //        new Edge<int>(3,4),
-        //        new Edge<int>(4,9),
-        //        new Edge<int>(10,9),
-        //        new Edge<int>(10,15),
-        //        new Edge<int>(15,16),
-        //        new Edge<int>(16,18),
-        //        new Edge<int>(18,17),
-        //        new Edge<int>(17,14),
-        //        new Edge<int>(13,14),
-        //        new Edge<int>(12,13),
-        //    };
-
-        //    int superVertex = 6;
-        //    var liftedAugmentingPath = EdmondsAlgorithm.LiftAugmentingPath(augmentingPath, blossom, g, edgeBetweenTrees, superVertex, out Edge<int> liftedEdgeBetweenTrees);
-
-        //    var testResult = VerifyLiftedAugmentingPath(g, liftedAugmentingPath, expectedAugmentingPath);
-        //    Assert.IsTrue(testResult.IsCorrect, testResult.ErrorMessage);
-        //}
-
         private static AdvancedAlgorithms.TestResult VerifyLiftedAugmentingPath(
             UndirectedGraph<int, Edge<int>> g, List<Edge<int>> liftedAugmentingPath, List<Edge<int>> expectedAugmentingPath)
         {
@@ -924,28 +908,6 @@ namespace AdvancedAlgorithmsTests
             Assert.AreEqual(1, beginning);
             Assert.AreEqual(0, end);
         }
-
-        //[TestMethod]
-        //public void EqualityComparer_ShouldAccept_AllEdges()
-        //{
-        //    var edgeComparer = new EdgeComparer();
-        //    var g = new UndirectedGraph<int, Edge<int>>(false, edgeComparer.GetEqualityComparer());
-
-        //    var edges = GetGraph1().Edges;
-        //    g.AddVerticesAndEdgeRange(edges);
-
-        //    foreach (var edge in edges)
-        //    {
-        //        Assert.IsTrue(g.ContainsEdge(edge),"Original edge");
-
-        //        var differentInstance = new Edge<int>(edge.Source, edge.Target);
-        //        var reveresedEdge = new Edge<int>(edge.Target, edge.Source);
-        //        Assert.IsTrue(g.RemoveEdge(differentInstance));
-
-        //        //Assert.IsTrue(g.ContainsEdge(differentInstance), "Same edge but different instance");
-        //        //Assert.IsTrue(g.ContainsEdge(reveresedEdge), "ReversedEdge");
-        //    }
-        //}
 
         [TestMethod]
         public void RemoveEdgeFromGraph_ShouldRemove()

@@ -30,5 +30,17 @@ namespace AdvancedAlgorithms
 
             return g;
         }
+
+        public UndirectedGraph<int, Edge<int>> GetCycleGraph(int verticesCount)
+        {
+            var g = new UndirectedGraph<int, Edge<int>>();
+            g.AddVertexRange(Enumerable.Range(0, verticesCount));
+            for (int i = 0; i < verticesCount - 1; i++)
+            {
+                g.AddEdge(new Edge<int>(i, i + 1));
+            }
+            g.AddEdge(new Edge<int>(0, verticesCount - 1));
+            return g;   
+        }
     }
 }

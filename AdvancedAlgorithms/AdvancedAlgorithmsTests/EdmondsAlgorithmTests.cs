@@ -175,7 +175,7 @@ namespace AdvancedAlgorithmsTests
             if (correctEdgesCount != matching.Count)
                 return new AdvancedAlgorithms.TestResult(false, $"Incorrect matching edges count. " +
                     $"Expected <{correctEdgesCount}>. Acutal <{matching.Count}>");
-            var matchedVertices = GetMatchedVertices(matching);
+            var matchedVertices = EdmondsAlgorithm.GetAllVerticesForPath(matching);
             if (correctEdgesCount * 2 != matchedVertices.Count)
                 return new AdvancedAlgorithms.TestResult(false, $"Some vertices in more than one edge." +
                     $" Expected <{correctEdgesCount * 2}>. Acutal <{matchedVertices.Count}>");
@@ -238,12 +238,6 @@ namespace AdvancedAlgorithmsTests
         private static bool CheckIfPathAlwaysExists(UndirectedGraph<int, Edge<int>> g)
         {
             bool pathAlwaysExists = true;
-            var initialVisited = new Dictionary<int, bool>();
-            foreach (var vertex in g.Vertices)
-            {
-                initialVisited.Add(vertex, false);
-            }
-
 
             bool shouldContinue = true;
             foreach (var v1 in g.Vertices)
@@ -252,8 +246,7 @@ namespace AdvancedAlgorithmsTests
                     break;
                 foreach (var v2 in g.Vertices)
                 {
-                    var visited = new Dictionary<int, bool>(initialVisited);
-                    bool pathFound = EdmondsAlgorithm.DFSSearch(v1, v2, visited, g, new Stack<Edge<int>>());
+                    bool pathFound = EdmondsAlgorithm.DFSSearch(v1, v2, g, out List<Edge<int>> path);
                     if (!pathFound)
                     {
                         pathAlwaysExists = pathFound;
@@ -266,16 +259,6 @@ namespace AdvancedAlgorithmsTests
             return pathAlwaysExists;
         }
 
-        private HashSet<int> GetMatchedVertices(List<Edge<int>> matching)
-        {
-            var matchedVertices = new HashSet<int>();
-            foreach (var edge in matching)
-            {
-                matchedVertices.Add(edge.Source);
-                matchedVertices.Add(edge.Target);
-            }
-            return matchedVertices;
-        }
 
         [TestMethod]
         public void GetSymmetricalDifference_ShouldReturn_Count_1()
@@ -901,5 +884,89 @@ namespace AdvancedAlgorithmsTests
 
             return areEdgesInOriginalGraph;
         }
+
+        [TestMethod]
+        public void GetPathEnds_ShouldReturn_0_1()
+        {
+            var path = new List<Edge<int>>
+            {
+                new Edge<int>(5,0),
+                new Edge<int>(3,5),
+                new Edge<int>(3,8),
+                new Edge<int>(9,8),
+                new Edge<int>(9,4),
+                new Edge<int>(4,2),
+                new Edge<int>(2,1),
+            };
+
+            EdmondsAlgorithm.GetPathEnds(path, out int beginning, out int end);
+
+            Assert.AreEqual(0, beginning);
+            Assert.AreEqual(1, end);
+        }
+
+        [TestMethod]
+        public void GetPathEnds_ShouldReturn_1_0()
+        {
+            var path = new List<Edge<int>>
+            {
+                new Edge<int>(2,1),
+                new Edge<int>(4,2),
+                new Edge<int>(9,4),
+                new Edge<int>(9,8),
+                new Edge<int>(3,8),
+                new Edge<int>(3,5),
+                new Edge<int>(5,0),
+            };
+
+            EdmondsAlgorithm.GetPathEnds(path, out int beginning, out int end);
+
+            Assert.AreEqual(1, beginning);
+            Assert.AreEqual(0, end);
+        }
+
+        //[TestMethod]
+        //public void EqualityComparer_ShouldAccept_AllEdges()
+        //{
+        //    var edgeComparer = new EdgeComparer();
+        //    var g = new UndirectedGraph<int, Edge<int>>(false, edgeComparer.GetEqualityComparer());
+
+        //    var edges = GetGraph1().Edges;
+        //    g.AddVerticesAndEdgeRange(edges);
+
+        //    foreach (var edge in edges)
+        //    {
+        //        Assert.IsTrue(g.ContainsEdge(edge),"Original edge");
+
+        //        var differentInstance = new Edge<int>(edge.Source, edge.Target);
+        //        var reveresedEdge = new Edge<int>(edge.Target, edge.Source);
+        //        Assert.IsTrue(g.RemoveEdge(differentInstance));
+
+        //        //Assert.IsTrue(g.ContainsEdge(differentInstance), "Same edge but different instance");
+        //        //Assert.IsTrue(g.ContainsEdge(reveresedEdge), "ReversedEdge");
+        //    }
+        //}
+
+        [TestMethod]
+        public void RemoveEdgeFromGraph_ShouldRemove()
+        {
+            var g = new UndirectedGraph<int, Edge<int>>();
+
+            var edges = GetGraph1().Edges;
+            g.AddVerticesAndEdgeRange(edges);
+
+            foreach (var edge in edges)
+            {
+                int originalGraphCount = g.EdgeCount;
+                bool edgeRemoved = EdmondsAlgorithm.RemoveEdgeFromGraph(g, edge, out UndirectedGraph<int, Edge<int>> smallerGraph);
+                g = smallerGraph;
+
+                Assert.IsTrue(edgeRemoved, "Edge was not removed");
+                int edgesCountDifference = originalGraphCount - smallerGraph.EdgeCount;
+                Assert.AreEqual(1, edgesCountDifference, $"Edges numbers are incorrect. " +
+                    $"Expected <{originalGraphCount}>. Actual <{smallerGraph.EdgeCount}>");
+            }
+        }
     }
+
 }

@@ -13,11 +13,11 @@ namespace AdvancedAlgorithms
             var initialMatching = new List<Edge<int>>();
             var result = FindMaximumMatching(g, initialMatching);
             var badEdges = new List<Edge<int>>();
-            if(!CheckResult(result, ref badEdges))
+            if (!CheckResult(result, ref badEdges))
             {
                 Console.WriteLine("BAD MAXIMUM MATCHING !!!");
                 // maybe we should remove bad edges and return maximum matching without them ???
-                foreach(var edge in badEdges)
+                foreach (var edge in badEdges)
                 {
                     result.Remove(edge);
                 }
@@ -31,9 +31,9 @@ namespace AdvancedAlgorithms
         {
             List<int> vertices = new List<int>();
             int counter = 0;
-            foreach(var edge in edgesList)
+            foreach (var edge in edgesList)
             {
-                if(vertices.Contains(edge.Source) || vertices.Contains(edge.Target))
+                if (vertices.Contains(edge.Source) || vertices.Contains(edge.Target))
                 {
                     badEdges.Add(edge);
                 }
@@ -41,7 +41,7 @@ namespace AdvancedAlgorithms
                 vertices.Add(edge.Source);
                 vertices.Add(edge.Target);
             }
-            if(badEdges.Count > 0)
+            if (badEdges.Count > 0)
             {
                 return false;
             }
@@ -201,17 +201,11 @@ namespace AdvancedAlgorithms
                                 {
                                     visited.Add(vertex, false);
                                 }
-                                var pathStack = new Stack<Edge<int>>();
-                                bool pathFound = DFSSearch(v, w, visited, F, pathStack);
+                                //var blossom = new Stack<Edge<int>>();
+                                bool pathFound = DFSSearch(v, w, F, out List<Edge<int>> blossom);
                                 if (!pathFound)
                                     throw new ArgumentException();
-                                var pathFromVToW = new List<Edge<int>>();
-                                while (pathStack.Count != 0)
-                                {
-                                    pathFromVToW.Add(pathStack.Pop());
-                                }
 
-                                var blossom = new List<Edge<int>>(pathFromVToW);
                                 blossom.Add(edgeVW);
                                 TestResult blossomCorrectResult = VerifyBlossom(blossom, currentMatching);
                                 if (!blossomCorrectResult.IsCorrect)
@@ -228,7 +222,7 @@ namespace AdvancedAlgorithms
                                 }
 
                                 // LiftAugmentingPath should return some edge
-                                var liftedAugmentingPath = LiftAugmentingPath(contractedAugmentingPath, blossom, g, edgeBetweenTrees, superVertex, out Edge<int> liftedEdgeBetweenTrees);
+                                var liftedAugmentingPath = LiftAugmentingPath(contractedAugmentingPath, blossom, g, edgeBetweenTrees, superVertex, currentMatching);
                                 if (liftedAugmentingPath.Count % 2 == 0)
                                     throw new ArgumentException();
                                 //connectingTreesEdge = liftedEdgeBetweenTrees;
@@ -251,7 +245,7 @@ namespace AdvancedAlgorithms
 
             if (blossom.Count % 2 == 0)
                 return new TestResult(false, "The cycle has an even number of edges");
-            var matchedVerticesInGraph = GetMatchedVertices(matching);
+            var matchedVerticesInGraph = GetAllVerticesForPath(matching);
             var matchedVerticesInBlossom = new HashSet<int>();
             var unmatchedVerticesInBlossom = new HashSet<int>();
             foreach (var edge in blossom)
@@ -274,15 +268,15 @@ namespace AdvancedAlgorithms
             return new TestResult(true, "");
         }
 
-        private static HashSet<int> GetMatchedVertices(List<Edge<int>> matching)
+        public static HashSet<int> GetAllVerticesForPath(List<Edge<int>> path)
         {
-            var matchedVertices = new HashSet<int>();
-            foreach (var edge in matching)
+            var allVertices = new HashSet<int>();
+            foreach (var edge in path)
             {
-                matchedVertices.Add(edge.Source);
-                matchedVertices.Add(edge.Target);
+                allVertices.Add(edge.Source);
+                allVertices.Add(edge.Target);
             }
-            return matchedVertices;
+            return allVertices;
         }
 
         /// <summary>
@@ -291,19 +285,19 @@ namespace AdvancedAlgorithms
         /// <param name="blossom"></param>
         /// <returns></returns>
         // TODO: Debug through it
-        public static List<Edge<int>> LiftAugmentingPath(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex, out Edge<int> liftedEdgeBetweenTrees)
+        public static List<Edge<int>> LiftAugmentingPath(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex, List<Edge<int>> currentMatching)
         {
 
             //GetPathEnds(augmentingPath, out int pathBeginnign, out int pathEnd);
-            if (augmentingPath.Count == 1)
-                return LiftingV1(augmentingPath, blossom, g, edgeBetweenTrees, superVertex, out liftedEdgeBetweenTrees);
-            else
-                return LiftingV2(augmentingPath, blossom, g, edgeBetweenTrees, superVertex, out liftedEdgeBetweenTrees);
+            //if (augmentingPath.Count == 1)
+            //return LiftingV1(augmentingPath, blossom, g, edgeBetweenTrees, superVertex, currentMatching);
+            //else
+            //return LiftingV2(augmentingPath, blossom, g, edgeBetweenTrees, superVertex, currentMatching);
 
-            //return LiftingV3(augmentingPath, blossom, g, edgeBetweenTrees, superVertex, out liftedEdgeBetweenTrees);
+            return LiftingV3(augmentingPath, blossom, g, edgeBetweenTrees, superVertex, currentMatching);
         }
 
-        private static void GetPathEnds(List<Edge<int>> augmentingPath, out int beginning, out int end)
+        public static void GetPathEnds(List<Edge<int>> augmentingPath, out int beginning, out int end)
         {
             if (augmentingPath.Count == 0)
                 throw new ArgumentException();
@@ -316,7 +310,7 @@ namespace AdvancedAlgorithms
             if (path.Count > 0)
             {
                 var secondEdge = path.Peek();
-                if (firstVertex == secondEdge.Source || firstVertex == firstEdge.Target)
+                if (firstVertex == secondEdge.Source || firstVertex == secondEdge.Target)
                 {
                     previousVertex = firstVertex;
                     firstVertex = lastVertex;
@@ -330,8 +324,10 @@ namespace AdvancedAlgorithms
                     var edge = path.Dequeue();
                     if (edge.Source == previousVertex)
                         previousVertex = edge.Target;
-                    else
+                    else if (edge.Target == previousVertex)
                         previousVertex = edge.Source;
+                    else
+                        throw new ArgumentException("Incorrect path");
                 }
                 lastVertex = previousVertex;
             }
@@ -339,15 +335,13 @@ namespace AdvancedAlgorithms
             end = lastVertex;
         }
 
-        private static List<Edge<int>> LiftingV1(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex, out Edge<int> liftedEdgeBetweenTrees)
+        private static List<Edge<int>> LiftingV1(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex, List<Edge<int>> currentMatching)
         {
-            liftedEdgeBetweenTrees = edgeBetweenTrees;
             return augmentingPath;
         }
 
-        private static List<Edge<int>> LiftingV2(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex, out Edge<int> liftedEdgeBetweenTrees)
+        private static List<Edge<int>> LiftingV2(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex, List<Edge<int>> currentMatching)
         {
-            liftedEdgeBetweenTrees = edgeBetweenTrees;
             var liftedAugmentingPath = new List<Edge<int>>();
             var blossomVertices = new HashSet<int>();
             foreach (var edge in blossom)
@@ -412,12 +406,7 @@ namespace AdvancedAlgorithms
             var pathStack = new Stack<Edge<int>>();
             pathFromBlossom.Clear();
 
-            var visited = new Dictionary<int, bool>();
-            foreach (var vertex in blossomGraph.Vertices)
-            {
-                visited.Add(vertex, false);
-            }
-            DFSSearch(edgeBetweenVertexInSecondTree, superVertex, visited, blossomGraph, pathStack);
+            DFSSearch(edgeBetweenVertexInSecondTree, superVertex, blossomGraph, out pathFromBlossom);
             while (pathStack.Count != 0)
             {
                 pathFromBlossom.Add(pathStack.Pop());
@@ -443,12 +432,177 @@ namespace AdvancedAlgorithms
             return liftedAugmentingPath;
         }
 
-        private static List<Edge<int>> LiftingV3(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex, out Edge<int> liftedEdgeBetweenTrees)
+        private static List<Edge<int>> LiftingV3(List<Edge<int>> augmentingPath, List<Edge<int>> blossom, UndirectedGraph<int, Edge<int>> g, Edge<int> edgeBetweenTrees, int superVertex, List<Edge<int>> currentMatching)
         {
-            liftedEdgeBetweenTrees = edgeBetweenTrees;
-            return augmentingPath;
+            var edgeComparer = new EdgeComparer();
+            var matchedVertices = GetAllVerticesForPath(currentMatching);
+            var matchedEdges = new HashSet<Edge<int>>(currentMatching, new EdgeComparer());
+            GetPathEnds(augmentingPath, out int firstVertex, out int lastVertex);
+            var superVertexEdges = new List<Edge<int>>();
+            foreach (var edge in augmentingPath)
+            {
+                if (edge.Source == superVertex || edge.Target == superVertex)
+                    superVertexEdges.Add(edge);
+            }
+            if (superVertexEdges.Count > 2)
+                throw new ArgumentException("There can be max 2 edges adjacent to superVertex in augmenting path");
+            var superVertexUnmatchedEdge = superVertexEdges.FirstOrDefault(edge => !matchedEdges.Contains(edge));
+            var superVertexMatchedEdge = superVertexEdges.FirstOrDefault(edge => matchedEdges.Contains(edge));
+            if (superVertexEdges.Count == 2 && (superVertexMatchedEdge == null || superVertexUnmatchedEdge == null))
+                throw new ArgumentException("Super vertex edges found incorrectly");
+            if (superVertexEdges.Count == 1 && (superVertexMatchedEdge == null && superVertexUnmatchedEdge == null))
+                throw new ArgumentException("Super vertex edges found incorrectly");
+
+            var pathForMatchedEdge = new List<Edge<int>>();
+            var pathForUnmatchedEdge = new List<Edge<int>>();
+            var pathForBlossom = new List<Edge<int>>();
+            if (superVertexMatchedEdge != null)
+            {
+                int oppositeToSuperVertex1 = GetTargetVertex(superVertexMatchedEdge, superVertex);
+                if (oppositeToSuperVertex1 != firstVertex && oppositeToSuperVertex1 != lastVertex)
+                {
+                    var augmentingPathGraph1 = GetGraphFromEdges(augmentingPath);
+                    var edges = new HashSet<Edge<int>>(g.Edges, edgeComparer);
+                    if (!edges.Contains(superVertexMatchedEdge))
+                        throw new ArgumentException("Graph should contain matched Edge");
+                    bool wasRemoved = RemoveEdgeFromGraph(augmentingPathGraph1, superVertexMatchedEdge, out augmentingPathGraph1);
+                    //bool remove1 = augmentingPathGraph1.RemoveEdge(superVertexMatchedEdge);
+                    //bool remove2 = augmentingPathGraph1.RemoveEdge(new Edge<int>(superVertexMatchedEdge.Target, superVertexMatchedEdge.Source));
+                    if (!wasRemoved)
+                        throw new ArgumentException("Edge was not removed");
+                    bool pathFound = DFSSearch(firstVertex, oppositeToSuperVertex1, augmentingPathGraph1, out List<Edge<int>> path1);
+                    if (pathFound)
+                    {
+                        pathForMatchedEdge = path1;
+                    }
+                    else
+                    {
+                        pathFound = DFSSearch(oppositeToSuperVertex1, lastVertex, augmentingPathGraph1, out List<Edge<int>> path2);
+                        if (!pathFound)
+                            throw new ArgumentException("Path should exist");
+                        pathForMatchedEdge = path2;
+                    }
+                }
+                pathForMatchedEdge.Add(superVertexMatchedEdge);
+            }
+
+            if (superVertexUnmatchedEdge != null)
+            {
+                int oppositeToSuperVertex2 = GetTargetVertex(superVertexUnmatchedEdge, superVertex);
+                if (oppositeToSuperVertex2 != firstVertex && oppositeToSuperVertex2 != lastVertex)
+                {
+                    var augmentingPathGraph2 = GetGraphFromEdges(augmentingPath);
+                    var edges = new HashSet<Edge<int>>(g.Edges, edgeComparer);
+                    //if (!edges.Contains(superVertexUnmatchedEdge))
+                    //    throw new ArgumentException("Graph should contain matched Edge");
+                    bool wasRemoved = RemoveEdgeFromGraph(augmentingPathGraph2, superVertexUnmatchedEdge, out augmentingPathGraph2);
+                    //bool remove1 = augmentingPathGraph2.RemoveEdge(superVertexUnmatchedEdge);
+                    //bool remove2 = augmentingPathGraph2.RemoveEdge(new Edge<int>(superVertexUnmatchedEdge.Target, superVertexUnmatchedEdge.Source));
+                    if (!wasRemoved)
+                        throw new ArgumentException("Edge was not removed");
+                    bool pathFound = DFSSearch(firstVertex, oppositeToSuperVertex2, augmentingPathGraph2, out List<Edge<int>> path1);
+                    if (pathFound)
+                    {
+                        pathForUnmatchedEdge = path1;
+                    }
+                    else
+                    {
+                        pathFound = DFSSearch(oppositeToSuperVertex2, lastVertex, augmentingPathGraph2, out List<Edge<int>> path2);
+                        if (!pathFound)
+                            throw new ArgumentException("Path should exist");
+                        pathForUnmatchedEdge = path2;
+                    }
+                }
+                //pathForUnmatchedEdge.Add(superVertexUnmatchedEdge);
+            }
+
+            Edge<int> firstEdgeInPath = null;
+            var blossomVertices = GetAllVerticesForPath(blossom);
+            int oppositeToSuperVertex = GetTargetVertex(superVertexUnmatchedEdge, superVertex);
+            int firstVertexOnBlossom = -1;
+            foreach (var edge in g.AdjacentEdges(oppositeToSuperVertex))
+            {
+                int target = GetTargetVertex(edge, oppositeToSuperVertex);
+                if (blossomVertices.Contains(target))
+                {
+                    firstEdgeInPath = edge;
+                    firstVertexOnBlossom = target;
+                    break;
+                }
+            }
+            if (firstEdgeInPath == null || firstVertexOnBlossom < 0)
+                throw new ArgumentException("This path should be found");
+            if (!matchedVertices.Contains(firstVertexOnBlossom))
+            {
+                return augmentingPath;
+            }
+            if (firstVertexOnBlossom == superVertex)
+            {
+                pathForBlossom = new List<Edge<int>> { firstEdgeInPath };
+            }
+            else
+            {
+                var blossomGraph = GetGraphFromEdges(blossom);
+                foreach (var edge in blossomGraph.AdjacentEdges(firstVertexOnBlossom))
+                {
+                    int target = GetTargetVertex(edge, firstVertexOnBlossom);
+                    if (!matchedVertices.Contains(target))
+                    {
+                        bool edgeRemoved = blossomGraph.RemoveEdge(edge);
+                        if (!edgeRemoved)
+                            throw new ArgumentException("Edge should be removed");
+                        break;
+                    }
+                }
+
+                bool pathFound = DFSSearch(firstVertexOnBlossom, superVertex, blossomGraph, out pathForBlossom);
+                pathForBlossom.Add(firstEdgeInPath);
+            }
+
+            // Merge results for all the 3 paths
+            var augmentingPathGraph = GetGraphFromEdges(pathForBlossom);
+            if (superVertexMatchedEdge != null)
+                augmentingPathGraph.AddVerticesAndEdgeRange(pathForMatchedEdge);
+            if (superVertexUnmatchedEdge != null)
+                augmentingPathGraph.AddVerticesAndEdgeRange(pathForUnmatchedEdge);
+
+            if (!augmentingPathGraph.Vertices.Contains(firstVertex) || !augmentingPathGraph.Vertices.Contains(lastVertex))
+                throw new ArgumentException("First and last vertex must be a part of the graph");
+            var liftedAugmentingPathFound = DFSSearch(firstVertex, lastVertex, augmentingPathGraph, out List<Edge<int>> liftedAugmentingPath);
+            if (!liftedAugmentingPathFound)
+                throw new ArgumentException("Lifted augmenting path not found");
+            return liftedAugmentingPath;
         }
 
+        private static UndirectedGraph<int, Edge<int>> GetGraphFromEdges(IEnumerable<Edge<int>> edges)
+        {
+            //var edgeComparer = new EdgeComparer();
+            var graphFromEdges = new UndirectedGraph<int, Edge<int>>();
+            foreach (var edge in edges)
+            {
+                graphFromEdges.AddVerticesAndEdge(edge);
+            }
+            if (graphFromEdges.EdgeCount != edges.Count())
+                throw new ArgumentException("AugmentingPathGraph creation error");
+            return graphFromEdges;
+        }
+
+        public static bool RemoveEdgeFromGraph(UndirectedGraph<int, Edge<int>> originalGraph, Edge<int> edgeToRemove, out UndirectedGraph<int, Edge<int>> resultGraph)
+        {
+            var edgeComparer = new EdgeComparer();
+            var edges = new HashSet<Edge<int>>(originalGraph.Edges, edgeComparer);
+            bool isRemoved = edges.Remove(edgeToRemove);
+            if(!isRemoved)
+            {
+                resultGraph = originalGraph;
+                return false;
+            }
+            else
+            {
+                resultGraph = GetGraphFromEdges(edges);
+                return true;
+            }
+        }
 
         // Tested
         public static UndirectedGraph<int, Edge<int>> ContractGraph(UndirectedGraph<int, Edge<int>> g, List<Edge<int>> blossom, out int superVertex, IEnumerable<Edge<int>> matching)
@@ -526,7 +680,26 @@ namespace AdvancedAlgorithms
         }
 
         // Tested
-        public static bool DFSSearch(int source, int destination, Dictionary<int, bool> visited, UndirectedGraph<int, Edge<int>> g, Stack<Edge<int>> stack)
+        public static bool DFSSearch(int source, int destination, UndirectedGraph<int, Edge<int>> g, out List<Edge<int>> path)
+        {
+            var visited = new Dictionary<int, bool>();
+            foreach (var vertex in g.Vertices)
+            {
+                visited.Add(vertex, false);
+            }
+            var pathStack = new Stack<Edge<int>>();
+            bool pathFound = DFSSearchRecurse(source, destination, visited, g, pathStack);
+
+            path = new List<Edge<int>>();
+            while (pathStack.Count != 0)
+            {
+                path.Add(pathStack.Pop());
+            }
+
+            return pathFound;
+        }
+
+        public static bool DFSSearchRecurse(int source, int destination, Dictionary<int, bool> visited, UndirectedGraph<int, Edge<int>> g, Stack<Edge<int>> stack)
         {
             if (source == destination)
                 return true;
@@ -542,7 +715,7 @@ namespace AdvancedAlgorithms
                     stack.Push(edge);
                     return true;
                 }
-                destinationFound = DFSSearch(targerVertex, destination, visited, g, stack);
+                destinationFound = DFSSearchRecurse(targerVertex, destination, visited, g, stack);
                 if (destinationFound)
                 {
                     stack.Push(edge);

@@ -23,5 +23,28 @@ namespace AdvancedAlgorithms
             int hCode = 1000 * edge.Source * edge.Target + edge.Source + edge.Target;
             return hCode.GetHashCode();
         }
+
+        private bool CompareEdges(Edge<int> edge, int source, int target)
+        {
+            if (source == edge.Source && target == edge.Target)
+                return true;
+            if (source == edge.Target && target == edge.Source)
+                return true;
+            return false;
+        }
+
+        //public EdgeEqualityComparer<int, Edge<int>> GetEqualityComparer()
+        //{
+        //    var equalityComparer = new EdgeEqualityComparer<int, Edge<int>>(CompareEdges);
+        //    return equalityComparer;
+        //}
+
+
+        //public delegate bool Comp(int v);
+
+        //public bool CompareSth(int n)
+        //{
+        //    return n > 5;
+        //}
     }
 }

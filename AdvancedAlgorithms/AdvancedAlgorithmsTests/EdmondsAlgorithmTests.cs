@@ -731,6 +731,7 @@ namespace AdvancedAlgorithmsTests
         [TestMethod]
         public void ContractGraph_Graph1()
         {
+            throw new ArgumentException();
             var g = GetGraph1();
             var blossom = new List<Edge<int>>
             {

@@ -11,6 +11,7 @@ namespace AdvancedAlgorithmsTests
         [TestMethod]
         public void EdgeComparerEquals1_SameEdge_ShouldReturn_true()
         {
+            throw new ArgumentException();
             var edge1 = new Edge<int>(0, 1);
             var comparer = new EdgeComparer();
             Assert.AreEqual(true, comparer.Equals(edge1, edge1));
